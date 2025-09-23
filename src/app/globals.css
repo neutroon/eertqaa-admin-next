@@ -1,26 +1,110 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* RTL Support */
+/* [dir="rtl"] {
+  text-align: right;
+}
+
+[dir="rtl"] .space-x-reverse > :not([hidden]) ~ :not([hidden]) {
+  --tw-space-x-reverse: 1;
+} */
+
+/* Arabic Font Support */
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap");
+
+.arabic-font {
+  font-family: "Cairo", "Arial", sans-serif;
+}
+
+/* Custom scrollbar for RTL */
+/* [dir="rtl"] ::-webkit-scrollbar {
+  width: 8px;
+}
+
+[dir="rtl"] ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+[dir="rtl"] ::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+[dir="rtl"] ::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+} */
+
+/* Responsive sidebar animations */
+.sidebar-transition {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Smooth scrolling for sidebar */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Dashboard layout fixes */
+.dashboard-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 320px;
+  z-index: 50;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.dashboard-sidebar.open {
+  transform: translateX(0);
+}
+
+@media (min-width: 1024px) {
+  .dashboard-sidebar {
+    position: static;
+    transform: translateX(0);
+    height: auto;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.dashboard-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Ensure proper spacing */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
 }
