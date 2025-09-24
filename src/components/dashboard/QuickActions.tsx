@@ -3,7 +3,6 @@
 import {
   PlusIcon,
   UserGroupIcon,
-  BookOpenIcon,
   ChartBarIcon,
   DocumentTextIcon,
   Cog6ToothIcon,
@@ -13,15 +12,15 @@ import Link from "next/link";
 export default function QuickActions() {
   const actions = [
     {
-      name: "إضافة دورة جديدة",
-      description: "إنشاء دورة تعليمية جديدة",
+      name: "إضافة برنامج جديد",
+      description: "إنشاء برنامج تعليمي جديد",
       href: "/dashboard/courses?action=add",
       icon: PlusIcon,
       color: "bg-blue-500 hover:bg-blue-600",
     },
     {
-      name: "إضافة طالب",
-      description: "تسجيل طالب جديد",
+      name: "إضافة متدرب",
+      description: "تسجيل متدرب جديد",
       href: "/dashboard/students?action=add",
       icon: UserGroupIcon,
       color: "bg-green-500 hover:bg-green-600",

@@ -4,9 +4,26 @@ import { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface CourseModalProps {
-  course?: any;
+  course?: {
+    id: string;
+    title: string;
+    description?: string;
+    category: string;
+    instructor: string;
+    duration: number;
+    price: number;
+    capacity: number;
+    status: string;
+    requirements?: string;
+    learningOutcomes?: string;
+  } | null;
   onClose: () => void;
-  categories: any[];
+  categories: Array<{
+    id: string;
+    name: string;
+    color: string;
+    courseCount: number;
+  }>;
 }
 
 export default function CourseModal({
@@ -71,7 +88,7 @@ export default function CourseModal({
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-gray-900">
-            {course ? "تعديل الكورس" : "إضافة كورس جديد"}
+            {course ? "تعديل البرنامج" : "إضافة برنامج جديد"}
           </h3>
           <button
             onClick={onClose}
@@ -85,7 +102,7 @@ export default function CourseModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                عنوان الكورس *
+                عنوان البرنامج *
               </label>
               <input
                 type="text"
@@ -195,7 +212,7 @@ export default function CourseModal({
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              وصف الكورس
+              وصف البرنامج
             </label>
             <textarea
               name="description"
@@ -246,7 +263,7 @@ export default function CourseModal({
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {course ? "حفظ التعديلات" : "إضافة الكورس"}
+              {course ? "حفظ التعديلات" : "إضافة البرنامج"}
             </button>
           </div>
         </form>

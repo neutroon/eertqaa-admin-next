@@ -30,9 +30,9 @@ export default function CoursePopularityChart({
   return (
     <div className="bg-white rounded-lg shadow p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-medium text-gray-900">شعبية الكورسات</h3>
+        <h3 className="text-lg font-medium text-gray-900">شعبية البرامج</h3>
         <p className="text-sm text-gray-500">
-          عدد المشاهدات والتسجيلات لكل كورس
+          عدد المشاهدات والتسجيلات لكل برنامج
         </p>
       </div>
 
@@ -64,7 +64,7 @@ export default function CoursePopularityChart({
                 value,
                 name === "views" ? "مشاهدة" : "تسجيل",
               ]}
-              labelFormatter={(label) => `الكورس: ${label}`}
+              labelFormatter={(label) => `البرنامج: ${label}`}
             />
             <Bar
               dataKey="views"

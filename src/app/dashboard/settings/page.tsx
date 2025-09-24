@@ -115,7 +115,7 @@ function GeneralSettings() {
             </label>
             <input
               type="text"
-              defaultValue="منصة تعليمية متخصصة في الدورات المهنية"
+              defaultValue="منصة تعليمية متخصصة في البرامج المهنية"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
@@ -247,7 +247,7 @@ function UserSettings() {
                 <p className="text-sm font-medium text-gray-700">
                   مدير المحتوى
                 </p>
-                <p className="text-xs text-gray-500">إدارة الدورات والمحتوى</p>
+                <p className="text-xs text-gray-500">إدارة البرامج والمحتوى</p>
               </div>
               <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                 3 مستخدمين
@@ -256,7 +256,9 @@ function UserSettings() {
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div>
                 <p className="text-sm font-medium text-gray-700">مشرف</p>
-                <p className="text-xs text-gray-500">مراقبة الطلاب والتقارير</p>
+                <p className="text-xs text-gray-500">
+                  مراقبة المتدربين والتقارير
+                </p>
               </div>
               <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
                 5 مستخدمين
@@ -379,7 +381,7 @@ function NotificationSettings() {
                 <p className="text-sm font-medium text-gray-700">
                   إشعارات التسجيل الجديد
                 </p>
-                <p className="text-xs text-gray-500">عند تسجيل طالب جديد</p>
+                <p className="text-xs text-gray-500">عند تسجيل متدرب جديد</p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -394,10 +396,10 @@ function NotificationSettings() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-700">
-                  تذكير بمواعيد الدورات
+                  تذكير بمواعيد البرامج
                 </p>
                 <p className="text-xs text-gray-500">
-                  تذكير الطلاب بمواعيد الدورات
+                  تذكير المتدربين بمواعيد البرامج
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -455,13 +457,13 @@ function PlatformSettings() {
         {/* Course Settings */}
         <div>
           <h3 className="text-md font-medium text-gray-900 mb-4">
-            إعدادات الدورات
+            إعدادات البرامج
           </h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-700">
-                  الحد الأقصى للطلاب في الدورة
+                  الحد الأقصى للطلاب في البرنامج
                 </p>
               </div>
               <input
@@ -477,7 +479,7 @@ function PlatformSettings() {
                   تفعيل التسجيل المسبق
                 </p>
                 <p className="text-xs text-gray-500">
-                  السماح بالتسجيل قبل بدء الدورة
+                  السماح بالتسجيل قبل بدء البرنامج
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -504,7 +506,7 @@ function PlatformSettings() {
                   تفعيل الشهادات التلقائية
                 </p>
                 <p className="text-xs text-gray-500">
-                  إصدار شهادات تلقائياً عند إكمال الدورة
+                  إصدار شهادات تلقائياً عند إكمال البرنامج
                 </p>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">

@@ -5,7 +5,12 @@ import { XMarkIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 interface CategoryModalProps {
   onClose: () => void;
-  categories: any[];
+  categories: Array<{
+    id: string;
+    name: string;
+    color: string;
+    courseCount: number;
+  }>;
 }
 
 const colorOptions = [
@@ -155,7 +160,7 @@ export default function CategoryModal({
                       {category.name}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {category.courseCount} كورس
+                      {category.courseCount} برنامج
                     </p>
                   </div>
                 </div>

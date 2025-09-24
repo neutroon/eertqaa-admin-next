@@ -9,7 +9,7 @@ import {
 
 const stats = [
   {
-    name: "إجمالي الكورسات",
+    name: "إجمالي البرامج",
     value: "30",
     change: "+2",
     changeType: "positive",
@@ -17,7 +17,7 @@ const stats = [
     color: "bg-blue-500",
   },
   {
-    name: "إجمالي الطلاب",
+    name: "إجمالي المتدربين",
     value: "1,234",
     change: "+12%",
     changeType: "positive",

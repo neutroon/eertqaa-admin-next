@@ -71,7 +71,7 @@ export default function CategoryPopularityChart({
                 boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
               }}
               formatter={(value: number, name: string, props: any) => [
-                `${value} تسجيل (${props.payload.percentage}%)`,
+                `${value} تسجيل (${props.payload?.percentage || 0}%)`,
                 "عدد التسجيلات",
               ]}
               labelFormatter={(label) => `الفئة: ${label}`}

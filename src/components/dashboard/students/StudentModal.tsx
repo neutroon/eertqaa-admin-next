@@ -4,7 +4,25 @@ import { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface StudentModalProps {
-  student?: any;
+  student?: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth: Date;
+    gender: string;
+    nationality: string;
+    city: string;
+    address?: string;
+    educationLevel?: string;
+    workExperience?: string;
+    selectedCourses: string[];
+    learningPreference: string;
+    status: string;
+    notes?: string;
+    emergencyContact?: { name: string; phone: string; relationship: string };
+  } | null;
   onClose: () => void;
 }
 
@@ -118,7 +136,7 @@ export default function StudentModal({ student, onClose }: StudentModalProps) {
       <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-4/5 lg:w-3/4 xl:w-2/3 shadow-lg rounded-md bg-white max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-4 sticky top-0 bg-white pb-4 border-b">
           <h3 className="text-lg font-medium text-gray-900">
-            {student ? "تعديل بيانات الطالب" : "إضافة طالب جديد"}
+            {student ? "تعديل بيانات المتدرب" : "إضافة متدرب جديد"}
           </h3>
           <button
             onClick={onClose}
@@ -316,7 +334,7 @@ export default function StudentModal({ student, onClose }: StudentModalProps) {
           {/* Course Selection */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h4 className="text-md font-medium text-gray-900 mb-3">
-              اختيار الكورسات
+              اختيار البرامج
             </h4>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
               {courses.map((course) => (
@@ -437,7 +455,7 @@ export default function StudentModal({ student, onClose }: StudentModalProps) {
               onChange={handleChange}
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="أي ملاحظات إضافية حول الطالب..."
+              placeholder="أي ملاحظات إضافية حول المتدرب..."
             />
           </div>
 
@@ -453,7 +471,7 @@ export default function StudentModal({ student, onClose }: StudentModalProps) {
               type="submit"
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {student ? "حفظ التعديلات" : "إضافة الطالب"}
+              {student ? "حفظ التعديلات" : "إضافة المتدرب"}
             </button>
           </div>
         </form>

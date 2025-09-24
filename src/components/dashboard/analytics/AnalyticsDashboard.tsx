@@ -109,7 +109,7 @@ const analyticsData = {
 
 const overviewCards = [
   {
-    title: "إجمالي الكورسات",
+    title: "إجمالي البرامج",
     value: analyticsData.totalCourses,
     icon: BookOpenIcon,
     color: "bg-blue-500",
@@ -117,7 +117,7 @@ const overviewCards = [
     changeType: "positive",
   },
   {
-    title: "إجمالي الطلاب",
+    title: "إجمالي المتدربين",
     value: analyticsData.totalStudents.toLocaleString(),
     icon: UserGroupIcon,
     color: "bg-green-500",
@@ -133,7 +133,7 @@ const overviewCards = [
     changeType: "positive",
   },
   {
-    title: "الكورسات النشطة",
+    title: "البرامج النشطة",
     value: analyticsData.activeCourses,
     icon: EyeIcon,
     color: "bg-yellow-500",
@@ -213,7 +213,7 @@ export default function AnalyticsDashboard() {
               icon: ChartBarIcon,
             },
             { id: "categories", label: "شعبية الفئات", icon: FunnelIcon },
-            { id: "courses", label: "شعبية الكورسات", icon: BookOpenIcon },
+            { id: "courses", label: "شعبية البرامج", icon: BookOpenIcon },
             { id: "filters", label: "استخدام الفلاتر", icon: EyeIcon },
           ].map((tab) => (
             <button
@@ -267,7 +267,7 @@ export default function AnalyticsDashboard() {
         <div className="bg-white rounded-lg shadow">
           <div className="px-6 py-4 border-b border-gray-200">
             <h3 className="text-lg font-medium text-gray-900">
-              أفضل الكورسات أداءً
+              أفضل البرامج أداءً
             </h3>
           </div>
           <div className="p-6">

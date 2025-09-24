@@ -14,8 +14,8 @@ import { clsx } from "clsx";
 
 const navigation = [
   { name: "الرئيسية", href: "/dashboard", icon: HomeIcon },
-  { name: "إدارة الكورسات", href: "/dashboard/courses", icon: BookOpenIcon },
-  { name: "إدارة الطلاب", href: "/dashboard/students", icon: UserGroupIcon },
+  { name: "إدارة البرامج", href: "/dashboard/courses", icon: BookOpenIcon },
+  { name: "إدارة المتدربين", href: "/dashboard/students", icon: UserGroupIcon },
   { name: "التحليلات", href: "/dashboard/analytics", icon: ChartBarIcon },
   {
     name: "إدارة التعليقات",

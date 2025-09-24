@@ -97,7 +97,18 @@ export default function CourseManagement() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showCourseModal, setShowCourseModal] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [editingCourse, setEditingCourse] = useState(null);
+  const [editingCourse, setEditingCourse] = useState<{
+    id: string;
+    title: string;
+    category: string;
+    instructor: string;
+    duration: number;
+    price: number;
+    capacity: number;
+    status: string;
+    requirements?: string;
+    learningOutcomes?: string;
+  } | null>(null);
 
   const filteredCourses = courses.filter((course) => {
     const matchesSearch =
@@ -108,13 +119,24 @@ export default function CourseManagement() {
     return matchesSearch && matchesCategory;
   });
 
-  const handleEditCourse = (course: any) => {
+  const handleEditCourse = (course: {
+    id: string;
+    title: string;
+    category: string;
+    instructor: string;
+    duration: number;
+    price: number;
+    capacity: number;
+    status: string;
+    requirements?: string;
+    learningOutcomes?: string;
+  }) => {
     setEditingCourse(course);
     setShowCourseModal(true);
   };
 
   const handleDeleteCourse = (courseId: string) => {
-    if (confirm("هل أنت متأكد من حذف هذا الكورس؟")) {
+    if (confirm("هل أنت متأكد من حذف هذا البرنامج؟")) {
       // Handle delete logic here
       console.log("Delete course:", courseId);
     }
@@ -130,7 +152,7 @@ export default function CourseManagement() {
             className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <PlusIcon className="w-4 h-4 ml-2" />
-            إضافة كورس جديد
+            إضافة برنامج جديد
           </button>
           <button
             onClick={() => setShowCategoryModal(true)}
@@ -151,7 +173,7 @@ export default function CourseManagement() {
             </div>
             <input
               type="text"
-              placeholder="البحث في الكورسات..."
+              placeholder="البحث في البرامج..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="block w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -196,7 +218,7 @@ export default function CourseManagement() {
                   {category.name}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {category.courseCount} كورس
+                  {category.courseCount} برنامج
                 </p>
               </div>
             </div>
@@ -208,7 +230,7 @@ export default function CourseManagement() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">
-            قائمة الكورسات ({filteredCourses.length})
+            قائمة البرامج ({filteredCourses.length})
           </h3>
         </div>
         <div className="overflow-x-auto">
@@ -216,7 +238,7 @@ export default function CourseManagement() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  الكورس
+                  البرنامج
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   الفئة

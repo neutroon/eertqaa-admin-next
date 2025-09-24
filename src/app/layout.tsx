@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "إرتقاء - لوحة التحكم",
-  description: "لوحة تحكم إرتقاء - إدارة الدورات والطلاب والشهادات والتحليلات",
+  description:
+    "لوحة تحكم إرتقاء - إدارة البرامج والمتدربين والشهادات والتحليلات",
 };
 
 export default function RootLayout({

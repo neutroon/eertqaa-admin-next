@@ -48,7 +48,7 @@ export default function PopularCourses() {
     <div className="bg-white rounded-lg shadow">
       <div className="px-6 py-4 border-b border-gray-200">
         <h3 className="text-lg font-medium text-gray-900">
-          الكورسات الأكثر شعبية
+          البرامج الأكثر شعبية
         </h3>
       </div>
       <div className="divide-y divide-gray-200">
@@ -73,7 +73,7 @@ export default function PopularCourses() {
               <div className="flex items-center space-x-4">
                 <div className="text-right">
                   <p className="text-sm font-medium text-gray-900">
-                    {course.enrollments} طالب
+                    {course.enrollments} متدرب
                   </p>
                   <div className="flex items-center">
                     <span className="text-yellow-400">★</span>
@@ -95,7 +95,7 @@ export default function PopularCourses() {
           href="/dashboard/courses"
           className="text-sm font-medium text-blue-600 hover:text-blue-500"
         >
-          عرض جميع الكورسات →
+          عرض جميع البرامج →
         </a>
       </div>
     </div>

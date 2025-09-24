@@ -2,12 +2,6 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {
-  BookOpenIcon,
-  UserGroupIcon,
-  ChartBarIcon,
-  ChatBubbleLeftRightIcon,
-} from "@heroicons/react/24/outline";
 
 // Dashboard home page - redirects to dashboard
 

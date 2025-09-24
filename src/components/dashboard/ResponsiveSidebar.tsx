@@ -12,7 +12,6 @@ import {
   Cog6ToothIcon,
   Bars3Icon,
   XMarkIcon,
-  BellIcon,
   MagnifyingGlassIcon,
   UserIcon,
   ArrowRightOnRectangleIcon,
@@ -22,8 +21,8 @@ import {
 
 const navigation = [
   { name: "الرئيسية", href: "/dashboard", icon: HomeIcon },
-  { name: "إدارة الكورسات", href: "/dashboard/courses", icon: BookOpenIcon },
-  { name: "إدارة الطلاب", href: "/dashboard/students", icon: UserGroupIcon },
+  { name: "إدارة البرامج", href: "/dashboard/courses", icon: BookOpenIcon },
+  { name: "إدارة المتدربين", href: "/dashboard/students", icon: UserGroupIcon },
   {
     name: "التقارير والتحليلات",
     href: "/dashboard/analytics",
@@ -39,13 +38,13 @@ const navigation = [
 
 const stats = [
   {
-    label: "إجمالي الدورات",
+    label: "إجمالي البرامج",
     value: "30",
     change: "+2",
     changeType: "positive",
   },
   {
-    label: "الطلاب المسجلين",
+    label: "المتدربين المسجلين",
     value: "1,247",
     change: "+12%",
     changeType: "positive",

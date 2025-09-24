@@ -6,7 +6,25 @@ import * as XLSX from "xlsx";
 
 interface ExportModalProps {
   onClose: () => void;
-  data: any[];
+  data: Array<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth?: Date;
+    gender: string;
+    nationality: string;
+    city: string;
+    address?: string;
+    educationLevel?: string;
+    workExperience?: string;
+    selectedCourses: string[];
+    learningPreference: string;
+    registrationDate?: Date;
+    status: string;
+    notes?: string;
+    emergencyContact?: { name: string; phone: string; relationship: string };
+  }>;
 }
 
 export default function ExportModal({ onClose, data }: ExportModalProps) {
@@ -35,7 +53,7 @@ export default function ExportModal({ onClose, data }: ExportModalProps) {
         العنوان: student.address || "",
         "المستوى التعليمي": student.educationLevel || "",
         "الخبرة العملية": student.workExperience || "",
-        "الكورسات المختارة": student.selectedCourses.join(", "),
+        "البرامج المختارة": student.selectedCourses.join(", "),
         "تفضيل التعلم":
           student.learningPreference === "online"
             ? "أونلاين"
@@ -73,7 +91,7 @@ export default function ExportModal({ onClose, data }: ExportModalProps) {
     if (exportFormat === "excel") {
       const ws = XLSX.utils.json_to_sheet(exportData);
       const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "الطلاب");
+      XLSX.utils.book_append_sheet(wb, ws, "المتدربين");
 
       // Set column widths
       const colWidths = Object.keys(exportData[0] || {}).map(() => ({
@@ -118,7 +136,7 @@ export default function ExportModal({ onClose, data }: ExportModalProps) {
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-1/2 shadow-lg rounded-md bg-white">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-gray-900">
-            تصدير بيانات الطلاب
+            تصدير بيانات المتدربين
           </h3>
           <button
             onClick={onClose}
@@ -180,7 +198,7 @@ export default function ExportModal({ onClose, data }: ExportModalProps) {
                   <span className="text-sm text-gray-700">
                     {key === "personalInfo" && "المعلومات الشخصية"}
                     {key === "contactInfo" && "معلومات الاتصال"}
-                    {key === "courses" && "الكورسات المختارة"}
+                    {key === "courses" && "البرامج المختارة"}
                     {key === "emergencyContact" && "جهة الاتصال في الطوارئ"}
                     {key === "notes" && "الملاحظات"}
                   </span>
@@ -195,7 +213,7 @@ export default function ExportModal({ onClose, data }: ExportModalProps) {
               ملخص التصدير
             </h4>
             <div className="text-sm text-blue-700">
-              <p>عدد الطلاب: {data.length}</p>
+              <p>عدد المتدربين: {data.length}</p>
               <p>التنسيق: {exportFormat === "excel" ? "Excel" : "CSV"}</p>
               <p>
                 الحقول المحددة:{" "}

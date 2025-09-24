@@ -29,7 +29,7 @@ const students = [
     learningPreference: "online",
     registrationDate: new Date("2024-01-15"),
     status: "pending",
-    notes: "طالب متفوق",
+    notes: "متدرب متفوق",
     emergencyContact: {
       name: "محمد علي",
       phone: "01234567891",
@@ -71,7 +71,7 @@ const students = [
     learningPreference: "hybrid",
     registrationDate: new Date("2024-01-13"),
     status: "enrolled",
-    notes: "طالب مجتهد",
+    notes: "متدرب مجتهد",
     emergencyContact: {
       name: "عبدالله محمد",
       phone: "01234567895",
@@ -92,7 +92,7 @@ const students = [
     learningPreference: "online",
     registrationDate: new Date("2024-01-12"),
     status: "completed",
-    notes: "أكملت الكورس بنجاح",
+    notes: "أكملت البرنامج بنجاح",
     emergencyContact: {
       name: "سعد الدين",
       phone: "01234567897",
@@ -150,7 +150,23 @@ export default function StudentManagement() {
   const [courseFilter, setCourseFilter] = useState("all");
   const [showStudentModal, setShowStudentModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null);
+  const [editingStudent, setEditingStudent] = useState<{
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth: Date;
+    gender: string;
+    nationality: string;
+    city: string;
+    selectedCourses: string[];
+    learningPreference: string;
+    registrationDate: Date;
+    status: string;
+    notes?: string;
+    emergencyContact?: { name: string; phone: string; relationship: string };
+  } | null>(null);
 
   const filteredStudents = students.filter((student) => {
     const matchesSearch =
@@ -168,7 +184,23 @@ export default function StudentManagement() {
     return matchesSearch && matchesStatus && matchesCourse;
   });
 
-  const handleEditStudent = (student: any) => {
+  const handleEditStudent = (student: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    dateOfBirth: Date;
+    gender: string;
+    nationality: string;
+    city: string;
+    selectedCourses: string[];
+    learningPreference: string;
+    registrationDate: Date;
+    status: string;
+    notes?: string;
+    emergencyContact?: { name: string; phone: string; relationship: string };
+  }) => {
     setEditingStudent(student);
     setShowStudentModal(true);
   };
@@ -205,7 +237,7 @@ export default function StudentManagement() {
           onClick={() => setShowStudentModal(true)}
           className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
-          إضافة طالب جديد
+          إضافة متدرب جديد
         </button>
       </div>
       {/* Filters */}
@@ -217,7 +249,7 @@ export default function StudentManagement() {
             </div>
             <input
               type="text"
-              placeholder="البحث في الطلاب..."
+              placeholder="البحث في المتدربين..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="block w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -251,7 +283,7 @@ export default function StudentManagement() {
               onChange={(e) => setCourseFilter(e.target.value)}
               className="block w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="all">جميع الكورسات</option>
+              <option value="all">جميع البرامج</option>
               {getUniqueCourses().map((course, index) => (
                 <option key={index} value={course as string}>
                   {course as string}
@@ -266,7 +298,7 @@ export default function StudentManagement() {
       <div className="bg-white rounded-lg shadow overflow-hidden">
         <div className="px-6 py-4 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">
-            قائمة الطلاب ({filteredStudents.length})
+            قائمة المتدربين ({filteredStudents.length})
           </h3>
         </div>
         <div className="overflow-x-auto">
@@ -274,13 +306,13 @@ export default function StudentManagement() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  الطالب
+                  المتدرب
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   معلومات الاتصال
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  الكورسات المختارة
+                  البرامج المختارة
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   تفضيل التعلم

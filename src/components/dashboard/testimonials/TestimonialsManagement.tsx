@@ -22,7 +22,7 @@ const testimonials = [
     courseName: "تطوير الويب المتقدم",
     rating: 5,
     comment:
-      "كورس ممتاز جداً، تعلمت الكثير من التقنيات الحديثة. المدرب كان محترف جداً وشرح كل شيء بوضوح.",
+      "برنامج ممتاز جداً، تعلمت الكثير من التقنيات الحديثة. المدرب كان محترف جداً وشرح كل شيء بوضوح.",
     status: "approved",
     createdAt: new Date("2024-01-15"),
     isFeatured: true,
@@ -33,7 +33,7 @@ const testimonials = [
     courseName: "إدارة المشاريع",
     rating: 4,
     comment:
-      "محتوى الكورس مفيد جداً، ساعدني في تطوير مهاراتي الإدارية. أنصح به بشدة.",
+      "محتوى البرنامج مفيد جداً، ساعدني في تطوير مهاراتي الإدارية. أنصح به بشدة.",
     status: "approved",
     createdAt: new Date("2024-01-14"),
     isFeatured: false,
@@ -44,7 +44,7 @@ const testimonials = [
     courseName: "التسويق الرقمي",
     rating: 5,
     comment:
-      "أفضل كورس في التسويق الرقمي، تعلمت استراتيجيات فعالة وساعدني في تطوير مشروعي.",
+      "أفضل برنامج في التسويق الرقمي، تعلمت استراتيجيات فعالة وساعدني في تطوير مشروعي.",
     status: "pending",
     createdAt: new Date("2024-01-13"),
     isFeatured: false,
@@ -55,7 +55,7 @@ const testimonials = [
     courseName: "الذكاء الاصطناعي",
     rating: 5,
     comment:
-      "كورس متقدم ومفصل، تعلمت مفاهيم الذكاء الاصطناعي بشكل عملي. شكراً للمدرب الرائع.",
+      "برنامج متقدم ومفصل، تعلمت مفاهيم الذكاء الاصطناعي بشكل عملي. شكراً للمدرب الرائع.",
     status: "approved",
     createdAt: new Date("2024-01-12"),
     isFeatured: true,
@@ -65,7 +65,7 @@ const testimonials = [
     studentName: "خالد إبراهيم",
     courseName: "البرمجة بلغة Python",
     rating: 3,
-    comment: "الكورس جيد لكن يحتاج لبعض التحسينات في المحتوى.",
+    comment: "البرنامج جيد لكن يحتاج لبعض التحسينات في المحتوى.",
     status: "rejected",
     createdAt: new Date("2024-01-11"),
     isFeatured: false,
@@ -111,7 +111,16 @@ export default function TestimonialsManagement() {
   const [courseFilter, setCourseFilter] = useState("all");
   const [ratingFilter, setRatingFilter] = useState("all");
   const [showTestimonialModal, setShowTestimonialModal] = useState(false);
-  const [editingTestimonial, setEditingTestimonial] = useState(null);
+  const [editingTestimonial, setEditingTestimonial] = useState<{
+    id: string;
+    studentName: string;
+    courseName: string;
+    rating: number;
+    comment: string;
+    status: string;
+    createdAt: Date;
+    isFeatured: boolean;
+  } | null>(null);
 
   const filteredTestimonials = testimonials.filter((testimonial) => {
     const matchesSearch =
@@ -133,7 +142,16 @@ export default function TestimonialsManagement() {
     return matchesSearch && matchesStatus && matchesCourse && matchesRating;
   });
 
-  const handleEditTestimonial = (testimonial: any) => {
+  const handleEditTestimonial = (testimonial: {
+    id: string;
+    studentName: string;
+    courseName: string;
+    rating: number;
+    comment: string;
+    status: string;
+    createdAt: Date;
+    isFeatured: boolean;
+  }) => {
     setEditingTestimonial(testimonial);
     setShowTestimonialModal(true);
   };
@@ -172,7 +190,7 @@ export default function TestimonialsManagement() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">إدارة التعليقات</h2>
-          <p className="text-gray-600">إدارة تعليقات الطلاب وآرائهم</p>
+          <p className="text-gray-600">إدارة تعليقات المتدربين وآرائهم</p>
         </div>
         <div className="flex space-x-3">
           <button
@@ -226,7 +244,7 @@ export default function TestimonialsManagement() {
               onChange={(e) => setCourseFilter(e.target.value)}
               className="block w-full pr-10 pl-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="all">جميع الكورسات</option>
+              <option value="all">جميع البرامج</option>
               {courses.map((course) => (
                 <option key={course} value={course}>
                   {course}

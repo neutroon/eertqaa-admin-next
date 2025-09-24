@@ -8,7 +8,7 @@ export default function AnalyticsPage() {
           التحليلات والإحصائيات
         </h1>
         <p className="text-gray-600 mt-2">
-          تحليل أداء الكورسات وسلوك المستخدمين
+          تحليل أداء البرامج وسلوك المستخدمين
         </p>
       </div> */}
 
