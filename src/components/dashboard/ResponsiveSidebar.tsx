@@ -17,12 +17,14 @@ import {
   ArrowRightOnRectangleIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
+  UsersIcon,
 } from "@heroicons/react/24/outline";
 
 const navigation = [
   { name: "الرئيسية", href: "/dashboard", icon: HomeIcon },
   { name: "إدارة البرامج", href: "/dashboard/courses", icon: BookOpenIcon },
   { name: "إدارة المتدربين", href: "/dashboard/students", icon: UserGroupIcon },
+  { name: "العملاء المحتملين", href: "/dashboard/leads", icon: UsersIcon },
   {
     name: "التقارير والتحليلات",
     href: "/dashboard/analytics",

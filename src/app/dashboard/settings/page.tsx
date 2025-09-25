@@ -125,10 +125,10 @@ function GeneralSettings() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              البريد الإلكتروني
+              رقم الهاتف
             </label>
             <input
-              type="email"
+              type="tel"
               defaultValue="info@eertqaa.com"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
@@ -370,10 +370,10 @@ function NotificationSettings() {
       </h2>
 
       <div className="space-y-6">
-        {/* Email Notifications */}
+        {/* Phone Notifications */}
         <div>
           <h3 className="text-md font-medium text-gray-900 mb-4">
-            إشعارات البريد الإلكتروني
+            إشعارات رقم الهاتف
           </h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">

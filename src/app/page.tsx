@@ -1,17 +1,24 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Dashboard home page - redirects to dashboard
 
 export default function Home() {
-  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
-    // Redirect to dashboard immediately
-    router.push("/dashboard");
-  }, [router]);
+    if (!isLoading) {
+      if (isAuthenticated) {
+        // Redirect authenticated users to dashboard
+        window.location.href = "/dashboard";
+      } else {
+        // Redirect unauthenticated users to login
+        window.location.href = "/login";
+      }
+    }
+  }, [isAuthenticated, isLoading]);
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -20,7 +27,11 @@ export default function Home() {
         <h2 className="text-xl font-semibold text-gray-900 mb-2">
           جاري التحميل...
         </h2>
-        <p className="text-gray-600">يتم توجيهك إلى لوحة التحكم</p>
+        <p className="text-gray-600">
+          {isAuthenticated
+            ? "يتم توجيهك إلى لوحة التحكم"
+            : "يتم توجيهك إلى صفحة تسجيل الدخول"}
+        </p>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ const recentRegistrations = [
     course: "تطوير الويب المتقدم",
     date: new Date("2024-01-15"),
     status: "pending",
-    email: "ahmed@example.com",
+    phone: "01024354212",
   },
   {
     id: "2",
@@ -17,7 +17,7 @@ const recentRegistrations = [
     course: "إدارة المشاريع",
     date: new Date("2024-01-14"),
     status: "approved",
-    email: "fatima@example.com",
+    phone: "01024354212",
   },
   {
     id: "3",
@@ -25,7 +25,7 @@ const recentRegistrations = [
     course: "التسويق الرقمي",
     date: new Date("2024-01-13"),
     status: "enrolled",
-    email: "mohammed@example.com",
+    phone: "01024354212",
   },
   {
     id: "4",
@@ -33,7 +33,7 @@ const recentRegistrations = [
     course: "الذكاء الاصطناعي",
     date: new Date("2024-01-12"),
     status: "completed",
-    email: "nora@example.com",
+    phone: "01024354212",
   },
   {
     id: "5",
@@ -41,7 +41,7 @@ const recentRegistrations = [
     course: "البرمجة بلغة Python",
     date: new Date("2024-01-11"),
     status: "pending",
-    email: "khalid@example.com",
+    phone: "01024354212",
   },
 ];
 
