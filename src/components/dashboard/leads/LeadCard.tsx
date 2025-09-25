@@ -194,14 +194,14 @@ export default function LeadCard({
               </span>
             </div>
             <p className="text-sm text-gray-700 line-clamp-2">{lead.message}</p>
-            {/* {lead.message.length > 100 && (
+            {lead.message.length > 100 && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="text-xs text-blue-600 hover:text-blue-500 mt-1"
               >
                 {isExpanded ? "إخفاء" : "عرض المزيد"}
               </button>
-            )} */}
+            )}
           </div>
 
           {/* Expanded Content */}
@@ -218,31 +218,31 @@ export default function LeadCard({
                   {lead.message}
                 </p>
               </div>
+            </div>
+          )}
 
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <SpeakerWaveIcon className="w-4 h-4 text-gray-400" />
-                  <span className="text-xs font-medium text-gray-500">
-                    الرسالة الصوتية:
-                  </span>
-                </div>
-                <div className="bg-gray-100 rounded-lg p-3">
-                  <p className="text-sm text-gray-700">
-                    {lead.voiceMessage || "لا توجد رسالة صوتية"}
-                  </p>
-                </div>
+          {lead.adminNote && (
+            <div>
+              <span className="text-xs font-medium text-gray-500">
+                ملاحظة الإدارة:
+              </span>
+              <p className="text-sm text-gray-700 mt-1 bg-blue-50 p-2 rounded">
+                {lead.adminNote}
+              </p>
+            </div>
+          )}
+
+          {lead.voiceMessage && (
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <SpeakerWaveIcon className="w-4 h-4 text-gray-400" />
+                <span className="text-xs font-medium text-gray-500">
+                  الرسالة الصوتية:
+                </span>
               </div>
-
-              {lead.adminNote && (
-                <div>
-                  <span className="text-xs font-medium text-gray-500">
-                    ملاحظة الإدارة:
-                  </span>
-                  <p className="text-sm text-gray-700 mt-1 bg-blue-50 p-2 rounded">
-                    {lead.adminNote}
-                  </p>
-                </div>
-              )}
+              <div className="rounded-lg p-3">
+                <audio src={lead.voiceMessage} controls className="w-full" />
+              </div>
             </div>
           )}
         </div>

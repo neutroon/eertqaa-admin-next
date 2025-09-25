@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { ArrowPathIcon } from "@heroicons/react/24/outline";
 import { Lead } from "@/config/api";
 import { leadsService } from "@/services/leads";
 import LeadsManagement from "@/components/dashboard/leads/LeadsManagement";
@@ -9,15 +10,20 @@ import LoadingSpinner from "@/components/ui/LoadingSpinner";
 export default function LeadsPage() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadLeads();
   }, []);
 
-  const loadLeads = async () => {
+  const loadLeads = async (isRefresh = false) => {
     try {
-      setIsLoading(true);
+      if (isRefresh) {
+        setIsRefreshing(true);
+      } else {
+        setIsLoading(true);
+      }
       setError(null);
       const response = await leadsService.getAllLeads();
       setLeads(response.leads);
@@ -25,8 +31,16 @@ export default function LeadsPage() {
       console.error("Failed to load leads:", error);
       setError("فشل في تحميل العملاء المحتملين");
     } finally {
-      setIsLoading(false);
+      if (isRefresh) {
+        setIsRefreshing(false);
+      } else {
+        setIsLoading(false);
+      }
     }
+  };
+
+  const handleRefresh = () => {
+    loadLeads(true);
   };
 
   const handleLeadCreated = (newLead: Lead) => {
@@ -57,7 +71,7 @@ export default function LeadsPage() {
         <div className="text-center">
           <div className="text-red-600 mb-4">{error}</div>
           <button
-            onClick={loadLeads}
+            onClick={handleRefresh}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
           >
             إعادة المحاولة
@@ -69,13 +83,26 @@ export default function LeadsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">
-          إدارة العملاء المحتملين
-        </h1>
-        <p className="text-gray-600">
-          إدارة طلبات العملاء المحتملين والتواصل معهم
-        </p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            إدارة العملاء المحتملين
+          </h1>
+          <p className="text-gray-600">
+            إدارة طلبات العملاء المحتملين والتواصل معهم
+          </p>
+        </div>
+
+        <button
+          onClick={handleRefresh}
+          disabled={isRefreshing}
+          className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        >
+          <ArrowPathIcon
+            className={`w-4 h-4 ml-2 ${isRefreshing ? "animate-spin" : ""}`}
+          />
+          {isRefreshing ? "جاري التحديث..." : "تحديث"}
+        </button>
       </div>
 
       <LeadsManagement
@@ -83,7 +110,7 @@ export default function LeadsPage() {
         onLeadCreated={handleLeadCreated}
         onLeadUpdated={handleLeadUpdated}
         onLeadDeleted={handleLeadDeleted}
-        onRefresh={loadLeads}
+        onRefresh={handleRefresh}
       />
     </div>
   );

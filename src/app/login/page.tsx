@@ -228,23 +228,12 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="text-sm font-medium text-blue-900 mb-2">
-              بيانات تجريبية:
-            </h4>
-            <div className="text-xs text-blue-700 space-y-1">
-              <p>رقم الهاتف: 01012345678</p>
-              <p>كلمة المرور: أي كلمة مرور</p>
-            </div>
-          </div>
         </div>
 
         {/* Footer */}
         <div className="text-center text-sm text-gray-500">
-          <p>© 2024 إرتقاء. جميع الحقوق محفوظة.</p>
-          <p className="mt-1">
+          <p>© 2025 إرتقاء. جميع الحقوق محفوظة.</p>
+          {/* <p className="mt-1">
             تحتاج مساعدة؟{" "}
             <Link
               href="/support"
@@ -252,7 +241,7 @@ export default function LoginPage() {
             >
               تواصل معنا
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
     </div>

@@ -234,7 +234,7 @@ export default function LeadModal({
                 htmlFor="phone"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                رقم الهاتف *
+                رقم الهاتف
                 {isEditing && (
                   <span className="text-xs text-gray-500 mr-2">
                     (للعرض فقط)
@@ -370,14 +370,9 @@ export default function LeadModal({
                 htmlFor="voiceMessage"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
-                الرسالة الصوتية *
-                {isEditing && (
-                  <span className="text-xs text-gray-500 mr-2">
-                    (للعرض فقط)
-                  </span>
-                )}
+                الرسالة الصوتية
               </label>
-              <textarea
+              {/* <textarea
                 id="voiceMessage"
                 name="voiceMessage"
                 rows={3}
@@ -392,7 +387,8 @@ export default function LeadModal({
                     : "border-gray-300"
                 }`}
                 placeholder="نص الرسالة الصوتية أو رابط الملف الصوتي..."
-              />
+              /> */}
+              <audio src={formData.voiceMessage} controls className="w-full" />
               {getFieldError(errors, "voiceMessage") && (
                 <p className="mt-1 text-sm text-red-600">
                   {getFieldError(errors, "voiceMessage")}
