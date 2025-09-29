@@ -115,7 +115,7 @@ export default function ForgotPasswordPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   className="appearance-none relative block w-full pr-10 pl-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                  placeholder="admin@eertqaa.com"
+                  placeholder="010 123 4567"
                 />
               </div>
             </div>
@@ -172,7 +172,7 @@ export default function ForgotPasswordPage() {
 
         {/* Footer */}
         <div className="text-center text-sm text-gray-500">
-          <p>© 2024 إرتقاء. جميع الحقوق محفوظة.</p>
+          <p>© 2025 إرتقاء. جميع الحقوق محفوظة.</p>
         </div>
       </div>
     </div>
