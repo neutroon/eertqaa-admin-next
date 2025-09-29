@@ -73,17 +73,32 @@ export default function ResponsiveSidebar() {
     setSidebarOpen(false);
   }, [pathname]);
 
-  // Handle window resize
+  // Handle window resize and mobile sidebar behavior
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 1024) {
         setSidebarOpen(false);
+      } else {
+        // On mobile, ensure sidebar is not collapsed
+        setCollapsed(false);
       }
     };
+
+    // Check initial screen size
+    if (window.innerWidth < 1024) {
+      setCollapsed(false);
+    }
 
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Ensure sidebar is not collapsed when opening on mobile
+  useEffect(() => {
+    if (sidebarOpen && window.innerWidth < 1024) {
+      setCollapsed(false);
+    }
+  }, [sidebarOpen]);
 
   return (
     <>
