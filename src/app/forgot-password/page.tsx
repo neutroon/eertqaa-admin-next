@@ -4,12 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowRightIcon, EnvelopeIcon } from "@heroicons/react/24/outline";
 import { PhoneIcon } from "lucide-react";
+import ComingSoonOverlay from "@/components/common/ComingSoonOverlay";
 
 export default function ForgotPasswordPage() {
   const [phone, setPhone] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
+  const [showComingSoon, setShowComingSoon] = useState(true);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -45,7 +46,7 @@ export default function ForgotPasswordPage() {
               تم إرسال الرابط
             </h2>
             <p className="text-gray-600 mb-8">
-              تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني
+              تم إرسال رابط إعادة تعيين كلمة المرور إلى رقم هاتفك
             </p>
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -87,7 +88,7 @@ export default function ForgotPasswordPage() {
             نسيت كلمة المرور؟
           </h2>
           <p className="text-gray-600">
-            أدخل بريدك الإلكتروني وسنرسل لك رابط إعادة تعيين كلمة المرور
+            أدخل رقم هاتفك وسنرسل لك رابط إعادة تعيين كلمة المرور
           </p>
         </div>
 
@@ -102,8 +103,8 @@ export default function ForgotPasswordPage() {
               >
                 رقم الهاتف
               </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+              <div className="relative" dir="ltr">
+                <div className="absolute inset-y-0 end-0 pe-3 flex items-center pointer-events-none">
                   <PhoneIcon className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
@@ -175,6 +176,14 @@ export default function ForgotPasswordPage() {
           <p>© 2025 إرتقاء. جميع الحقوق محفوظة.</p>
         </div>
       </div>
+      {/* Coming Soon Overlay */}
+      <ComingSoonOverlay
+        isOpen={showComingSoon}
+        onClose={() => setShowComingSoon(false)}
+        title="إعادة تعيين كلمة المرور"
+        description="صفحة إعادة تعيين كلمة المرور قيد التطوير. ستتمكن من إعادة تعيين كلمة المرور قريباً."
+        expectedDate="👀"
+      />
     </div>
   );
 }
