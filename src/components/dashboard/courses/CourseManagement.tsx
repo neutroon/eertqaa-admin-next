@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   PlusIcon,
   MagnifyingGlassIcon,
@@ -8,137 +8,83 @@ import {
   PencilIcon,
   TrashIcon,
   EyeIcon,
+  Cog6ToothIcon,
 } from "@heroicons/react/24/outline";
 import CourseModal from "./CourseModal";
 import CategoryModal from "./CategoryModal";
+import { Course, Category } from "@/config/api";
+import { categoriesService } from "@/services/categories";
+import { coursesService } from "@/services/courses";
 
-const categories = [
-  { id: "1", name: "التكنولوجيا", color: "bg-blue-500", courseCount: 8 },
-  { id: "2", name: "الإدارة", color: "bg-green-500", courseCount: 5 },
-  { id: "3", name: "التسويق", color: "bg-yellow-500", courseCount: 4 },
-  { id: "4", name: "المالية", color: "bg-red-500", courseCount: 3 },
-  { id: "5", name: "التصميم", color: "bg-purple-500", courseCount: 3 },
-  { id: "6", name: "اللغات", color: "bg-indigo-500", courseCount: 2 },
-  { id: "7", name: "الصحة", color: "bg-pink-500", courseCount: 2 },
-  { id: "8", name: "العلوم", color: "bg-teal-500", courseCount: 2 },
-  { id: "9", name: "الطب", color: "bg-orange-500", courseCount: 1 },
-];
+interface CourseManagementProps {
+  courses: Course[];
+  onCourseCreated: (course: Course) => void;
+  onCourseUpdated: (course: Course) => void;
+  onCourseDeleted: (courseId: string) => void;
+  onRefresh: () => void;
+}
 
-const courses = [
-  {
-    id: "1",
-    title: "تطوير الويب المتقدم",
-    category: "التكنولوجيا",
-    instructor: "د. أحمد محمد",
-    duration: 40,
-    price: 2500,
-    capacity: 30,
-    enrolled: 25,
-    status: "active",
-    rating: 4.8,
-    popularity: 95,
-  },
-  {
-    id: "2",
-    title: "إدارة المشاريع",
-    category: "الإدارة",
-    instructor: "د. فاطمة أحمد",
-    duration: 35,
-    price: 2000,
-    capacity: 25,
-    enrolled: 20,
-    status: "active",
-    rating: 4.7,
-    popularity: 88,
-  },
-  {
-    id: "3",
-    title: "التسويق الرقمي",
-    category: "التسويق",
-    instructor: "د. محمد علي",
-    duration: 30,
-    price: 1800,
-    capacity: 20,
-    enrolled: 18,
-    status: "active",
-    rating: 4.6,
-    popularity: 82,
-  },
-  {
-    id: "4",
-    title: "الذكاء الاصطناعي",
-    category: "التكنولوجيا",
-    instructor: "د. نورا سعد",
-    duration: 45,
-    price: 3000,
-    capacity: 15,
-    enrolled: 12,
-    status: "active",
-    rating: 4.9,
-    popularity: 92,
-  },
-  {
-    id: "5",
-    title: "البرمجة بلغة Python",
-    category: "التكنولوجيا",
-    instructor: "د. خالد إبراهيم",
-    duration: 32,
-    price: 2200,
-    capacity: 25,
-    enrolled: 22,
-    status: "active",
-    rating: 4.5,
-    popularity: 78,
-  },
-];
-
-export default function CourseManagement() {
+export default function CourseManagement({
+  courses,
+  onCourseCreated,
+  onCourseUpdated,
+  onCourseDeleted,
+  onRefresh,
+}: CourseManagementProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showCourseModal, setShowCourseModal] = useState(false);
   const [showCategoryModal, setShowCategoryModal] = useState(false);
-  const [editingCourse, setEditingCourse] = useState<{
-    id: string;
-    title: string;
-    category: string;
-    instructor: string;
-    duration: number;
-    price: number;
-    capacity: number;
-    status: string;
-    requirements?: string;
-    learningOutcomes?: string;
-  } | null>(null);
+  const [editingCourse, setEditingCourse] = useState<Course | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [isLoadingCategories, setIsLoadingCategories] = useState(false);
 
+  useEffect(() => {
+    loadCategories();
+  }, []);
+
+  const loadCategories = async () => {
+    try {
+      setIsLoadingCategories(true);
+      const response = await categoriesService.getAllCategories();
+      setCategories(response);
+    } catch (error) {
+      console.error("Failed to load categories:", error);
+    } finally {
+      setIsLoadingCategories(false);
+    }
+  };
+
+  const refreshCategories = () => {
+    loadCategories();
+  };
   const filteredCourses = courses.filter((course) => {
-    const matchesSearch =
-      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      course.instructor.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = course.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
     const matchesCategory =
-      selectedCategory === "all" || course.category === selectedCategory;
+      selectedCategory === "all" || course.category.name === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
-  const handleEditCourse = (course: {
-    id: string;
-    title: string;
-    category: string;
-    instructor: string;
-    duration: number;
-    price: number;
-    capacity: number;
-    status: string;
-    requirements?: string;
-    learningOutcomes?: string;
-  }) => {
+  const handleEditCourse = (course: Course) => {
     setEditingCourse(course);
     setShowCourseModal(true);
   };
 
-  const handleDeleteCourse = (courseId: string) => {
+  const handleDeleteCourse = async (courseId: string) => {
     if (confirm("هل أنت متأكد من حذف هذا البرنامج؟")) {
-      // Handle delete logic here
-      console.log("Delete course:", courseId);
+      try {
+        await coursesService.deleteCourse(courseId);
+        onCourseDeleted(courseId);
+        // Refresh categories to update course counts
+        refreshCategories();
+        // Also refresh courses to ensure consistency
+        onRefresh();
+      } catch (error) {
+        console.error("Failed to delete course:", error);
+        alert("فشل في حذف البرنامج. يرجى المحاولة مرة أخرى.");
+      }
     }
   };
 
@@ -158,7 +104,7 @@ export default function CourseManagement() {
             onClick={() => setShowCategoryModal(true)}
             className="inline-flex items-center px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
           >
-            <PlusIcon className="w-4 h-4 ml-2" />
+            <Cog6ToothIcon className="w-4 h-4 ml-2" />
             إدارة الفئات
           </button>
         </div>
@@ -210,15 +156,15 @@ export default function CourseManagement() {
               key={category.id}
               className="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
             >
-              <div
+              {/* <div
                 className={`w-4 h-4 rounded-full ${category.color} ml-3`}
-              ></div>
+              ></div> */}
               <div>
                 <p className="text-sm font-medium text-gray-900">
                   {category.name}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {category.courseCount} برنامج
+                  {category.courses.length} برنامج
                 </p>
               </div>
             </div>
@@ -244,16 +190,13 @@ export default function CourseManagement() {
                   الفئة
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  المدرب
+                  المدة (شهر)
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  المدة (ساعة)
+                  ملخص المحتوي
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  السعر
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  التسجيل
+                  المقاعد المتاحة
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   الحالة
@@ -271,37 +214,46 @@ export default function CourseManagement() {
                       <div className="text-sm font-medium text-gray-900">
                         {course.title}
                       </div>
-                      <div className="text-sm text-gray-500">
+                      {/* <div className="text-sm text-gray-500">
                         التقييم: {course.rating} ⭐
-                      </div>
+                      </div> */}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {course.category}
+                      {course.category.name}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {course.instructor}
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {course.duration}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {course.price.toLocaleString()} ج.م
+                    {course.summary}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {course.enrolled}/{course.capacity}
+                    {course.availableSeats}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        course.status === "active"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-gray-100 text-gray-800"
+                        course.status === "active" &&
+                        "bg-green-100 text-green-800"
+                      }${
+                        course.status === "completed" &&
+                        "bg-purple-100 text-purple-800"
+                      }${
+                        course.status === "inactive" &&
+                        "bg-red-100 text-red-800"
                       }`}
                     >
-                      {course.status === "active" ? "نشط" : "غير نشط"}
+                      {course.status === "active"
+                        ? "نشط"
+                        : course.status === "completed"
+                        ? "مكتمل"
+                        : "غير نشط"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
@@ -337,6 +289,17 @@ export default function CourseManagement() {
             setEditingCourse(null);
           }}
           categories={categories}
+          onCourseCreated={(newCourse) => {
+            onCourseCreated(newCourse);
+            // Refresh categories to update course counts
+            refreshCategories();
+          }}
+          onCourseUpdated={(updatedCourse) => {
+            onCourseUpdated(updatedCourse);
+            // Refresh categories in case category was changed
+            refreshCategories();
+          }}
+          onRefresh={onRefresh}
         />
       )}
 
@@ -344,6 +307,9 @@ export default function CourseManagement() {
         <CategoryModal
           onClose={() => setShowCategoryModal(false)}
           categories={categories}
+          onCategoryCreated={refreshCategories}
+          onCategoryDeleted={refreshCategories}
+          onRefresh={refreshCategories}
         />
       )}
     </div>

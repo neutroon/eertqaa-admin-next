@@ -17,6 +17,18 @@ export const API_CONFIG = {
       UPDATE: "/api/v1/leads",
       DELETE: "/api/v1/leads",
     },
+    COURSES: {
+      GET_ALL: "/api/v1/courses",
+      CREATE: "/api/v1/courses",
+      UPDATE: "/api/v1/courses",
+      DELETE: "/api/v1/courses",
+    },
+    CATEGORIES: {
+      GET_ALL: "/api/v1/courses/categories",
+      CREATE: "/api/v1/courses/categories",
+      UPDATE: "/api/v1/courses/categories",
+      DELETE: "/api/v1/courses/categories",
+    },
   },
 } as const;
 
@@ -92,11 +104,110 @@ export interface UpdateLeadStatusRequest {
   status: "pending" | "contacted" | "converted" | "rejected";
 }
 
-export interface LeadsResponse {
+export interface LeadsResponse extends ApiResponse {
   total: number;
   leads: Lead[];
 }
 
+// Courses Types
+export interface Category {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  courses: Course[];
+}
+
+export interface CategoryResponse {
+  id: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+  courses: Course[];
+}
+// export interface CategoriesResponse {
+//   total: number;
+//   categories: Category[];
+// }
+// [
+//   {
+//     id: "b9d223bd-2d31-4384-8f5a-43d2f65bb6f3",
+//     name: "first category",
+//     createdAt: "2025-09-27T00:51:10.334Z",
+//     updatedAt: "2025-09-27T00:51:10.334Z",
+//     courses: [
+//       {
+//         id: "ce47888e-1f7f-482c-8456-4fac5b3551c1",
+//         title: "fdadf",
+//         description: "fdssdf",
+//         price: 3,
+//         imageUrl: "fsdfd",
+//         categoryId: "b9d223bd-2d31-4384-8f5a-43d2f65bb6f3",
+//         summary: "fdsfs",
+//         duration: 3,
+//         availableSeats: 4,
+//         createdAt: "2025-09-27T00:56:23.847Z",
+//         updatedAt: "2025-09-27T00:56:23.847Z",
+//       },
+//     ],
+//   },
+// ];
+export interface Course {
+  id: string;
+  title: string;
+  description: string;
+  status: "active" | "inactive" | "completed";
+  category: {
+    id: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+  };
+
+  price: number;
+  imageUrl: string;
+  categoryId: string;
+  summary: string;
+  duration: number;
+  availableSeats: number;
+  createdAt: string;
+  updatedAt: string;
+  features: {
+    id: string;
+    name: string;
+    courseId: string;
+    createdAt: string;
+    updatedAt: string;
+  }[];
+}
+export interface CreateCourseRequest {
+  title: string;
+  summary: string;
+  duration: number;
+  availableSeats: number;
+  description: string;
+  price: number;
+  imageUrl: string;
+  categoryId: string;
+  features: string[];
+}
+// status
+export interface UpdateCourseRequest {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  imageUrl: string;
+  categoryId: string;
+  summary: string;
+  duration: number;
+  availableSeats: number;
+}
+export interface CoursesResponse {
+  total: number;
+  courses: Course[];
+}
 // Error Types
 export class ApiError extends Error {
   constructor(

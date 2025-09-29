@@ -41,7 +41,7 @@ export default function DashboardHeader() {
         </div>
 
         {/* Right side actions */}
-        <div className="flex items-center space-x-3 space-x-reverse">
+        <div className="flex items-center space-x-3">
           {/* Notifications */}
           <button className="relative p-2 text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg transition-colors">
             <BellIcon className="w-6 h-6" />
@@ -52,13 +52,13 @@ export default function DashboardHeader() {
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center space-x-3 space-x-reverse p-2 rounded-lg hover:bg-gray-50 transition-colors"
+              className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-50 transition-colors"
             >
               <div className="hidden sm:block text-right">
                 <p className="text-sm font-medium text-gray-900">
                   مرحباً، {user?.name || "المدير"}
                 </p>
-                <p className="text-xs text-gray-500">آخر دخول: اليوم</p>
+                {/* <p className="text-xs text-gray-500">آخر دخول: {user?.lastLogin || "اليوم"}</p> */}
               </div>
               <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-blue-700 rounded-full flex items-center justify-center shadow-lg">
                 <UserIcon className="w-6 h-6 text-white" />

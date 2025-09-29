@@ -5,7 +5,6 @@ import {
   PlusIcon,
   MagnifyingGlassIcon,
   FunnelIcon,
-  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import { Lead } from "@/config/api";
 import { leadsService } from "@/services/leads";

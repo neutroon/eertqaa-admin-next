@@ -19,17 +19,19 @@ import {
   ChevronRightIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
+import { useAuth } from "@/contexts/AuthContext";
+import { Loader } from "lucide-react";
 
 const navigation = [
   { name: "الرئيسية", href: "/dashboard", icon: HomeIcon },
   { name: "إدارة البرامج", href: "/dashboard/courses", icon: BookOpenIcon },
-  { name: "إدارة المتدربين", href: "/dashboard/students", icon: UserGroupIcon },
+  // { name: "إدارة المتدربين", href: "/dashboard/students", icon: UserGroupIcon },
   { name: "العملاء المحتملين", href: "/dashboard/leads", icon: UsersIcon },
-  {
-    name: "التقارير والتحليلات",
-    href: "/dashboard/analytics",
-    icon: ChartBarIcon,
-  },
+  // {
+  //   name: "التقارير والتحليلات",
+  //   href: "/dashboard/analytics",
+  //   icon: ChartBarIcon,
+  // },
   {
     name: "إدارة التعليقات",
     href: "/dashboard/testimonials",
@@ -64,7 +66,8 @@ export default function ResponsiveSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
-
+  const [isLoading, setIsLoading] = useState(false);
+  const { user, logout } = useAuth();
   // Close sidebar on mobile when route changes
   useEffect(() => {
     setSidebarOpen(false);
@@ -228,14 +231,25 @@ export default function ResponsiveSidebar() {
                 <>
                   <div className="mr-3 flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
-                      مدير النظام
+                      {user?.name || "المدير"}
                     </p>
                     <p className="text-xs text-gray-500 truncate">
-                      admin@eertqaa.com
+                      {user?.phone || "admin@eertqaa.com"}
                     </p>
                   </div>
-                  <button className="p-2 rounded-lg hover:bg-gray-100 transition-colors">
-                    <ArrowRightOnRectangleIcon className="w-4 h-4 text-gray-500" />
+                  <button
+                    onClick={async () => {
+                      setIsLoading(true);
+                      await logout();
+                      setIsLoading(false);
+                    }}
+                    className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  >
+                    {isLoading ? (
+                      <Loader className="w-4 h-4 text-gray-500" />
+                    ) : (
+                      <ArrowRightOnRectangleIcon className="w-4 h-4 text-gray-500" />
+                    )}
                   </button>
                 </>
               )}

@@ -2,52 +2,60 @@
 
 import { useState } from "react";
 import { XMarkIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { Category } from "@/config/api";
+import { categoriesService } from "@/services/categories";
+import { LoaderIcon } from "lucide-react";
 
 interface CategoryModalProps {
   onClose: () => void;
-  categories: Array<{
-    id: string;
-    name: string;
-    color: string;
-    courseCount: number;
-  }>;
+  categories: Array<Category>;
+  onCategoryCreated: () => void;
+  onCategoryDeleted: () => void;
+  onRefresh: () => void;
 }
-
-const colorOptions = [
-  { name: "أزرق", value: "bg-blue-500" },
-  { name: "أخضر", value: "bg-green-500" },
-  { name: "أصفر", value: "bg-yellow-500" },
-  { name: "أحمر", value: "bg-red-500" },
-  { name: "بنفسجي", value: "bg-purple-500" },
-  { name: "نيلي", value: "bg-indigo-500" },
-  { name: "وردي", value: "bg-pink-500" },
-  { name: "تركوازي", value: "bg-teal-500" },
-  { name: "برتقالي", value: "bg-orange-500" },
-];
 
 export default function CategoryModal({
   onClose,
   categories,
+  onCategoryCreated,
+  onCategoryDeleted,
+  onRefresh,
 }: CategoryModalProps) {
   const [newCategory, setNewCategory] = useState({
     name: "",
-    description: "",
-    color: "bg-blue-500",
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
-  const handleAddCategory = (e: React.FormEvent) => {
+  const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (newCategory.name.trim()) {
-      // Handle adding new category here
-      console.log("New category:", newCategory);
-      setNewCategory({ name: "", description: "", color: "bg-blue-500" });
+    if (!newCategory.name.trim()) return;
+
+    try {
+      setIsLoading(true);
+      await categoriesService.createCategory(newCategory as Category);
+      setNewCategory({ name: "" });
+      onCategoryCreated();
+    } catch (error) {
+      console.error("Failed to create category:", error);
+      alert("فشل في إضافة الفئة. يرجى المحاولة مرة أخرى.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleDeleteCategory = (categoryId: string) => {
+  const handleDeleteCategory = async (categoryId: string) => {
     if (confirm("هل أنت متأكد من حذف هذه الفئة؟")) {
-      // Handle delete logic here
-      console.log("Delete category:", categoryId);
+      try {
+        setIsDeleting(categoryId);
+        await categoriesService.deleteCategory(categoryId);
+        onCategoryDeleted();
+      } catch (error) {
+        console.error("Failed to delete category:", error);
+        alert("فشل في حذف الفئة. يرجى المحاولة مرة أخرى.");
+      } finally {
+        setIsDeleting(null);
+      }
     }
   };
 
@@ -74,8 +82,8 @@ export default function CategoryModal({
           <h4 className="text-md font-medium text-gray-900 mb-3">
             إضافة فئة جديدة
           </h4>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+          <div className="flex gap-3">
+            <div className="basis-2/3">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 اسم الفئة *
               </label>
@@ -87,56 +95,28 @@ export default function CategoryModal({
                 }
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="مثال: التكنولوجيا"
+                placeholder="مثال: المجمعة النفسية"
               />
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                اللون
-              </label>
-              <select
-                value={newCategory.color}
-                onChange={(e) =>
-                  setNewCategory((prev) => ({ ...prev, color: e.target.value }))
-                }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            <div className="flex justify-end items-end basis-1/3">
+              <button
+                type="submit"
+                disabled={isLoading}
+                className="justify-center inline-flex items-center px-4 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {colorOptions.map((color) => (
-                  <option key={color.value} value={color.value}>
-                    {color.name}
-                  </option>
-                ))}
-              </select>
+                {isLoading ? (
+                  <>
+                    <LoaderIcon className="w-4 h-4 ml-2 animate-spin" />
+                    جاري الإضافة...
+                  </>
+                ) : (
+                  <>
+                    <PlusIcon className="w-4 h-4 ml-2" />
+                    إضافة الفئة
+                  </>
+                )}
+              </button>
             </div>
-          </div>
-
-          <div className="mt-4">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              وصف الفئة
-            </label>
-            <textarea
-              value={newCategory.description}
-              onChange={(e) =>
-                setNewCategory((prev) => ({
-                  ...prev,
-                  description: e.target.value,
-                }))
-              }
-              rows={2}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="وصف مختصر للفئة التعليمية"
-            />
-          </div>
-
-          <div className="mt-4 flex justify-end">
-            <button
-              type="submit"
-              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <PlusIcon className="w-4 h-4 ml-2" />
-              إضافة الفئة
-            </button>
           </div>
         </form>
 
@@ -152,23 +132,25 @@ export default function CategoryModal({
                 className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
               >
                 <div className="flex items-center">
-                  <div
-                    className={`w-4 h-4 rounded-full ${category.color} ml-3`}
-                  ></div>
                   <div>
                     <p className="text-sm font-medium text-gray-900">
                       {category.name}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {category.courseCount} برنامج
+                      {category.courses.length} برنامج
                     </p>
                   </div>
                 </div>
                 <button
                   onClick={() => handleDeleteCategory(category.id)}
-                  className="text-red-600 hover:text-red-800 p-1"
+                  disabled={isDeleting === category.id}
+                  className="text-red-600 hover:text-red-800 p-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <TrashIcon className="w-4 h-4" />
+                  {isDeleting === category.id ? (
+                    <LoaderIcon className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <TrashIcon className="w-4 h-4" />
+                  )}
                 </button>
               </div>
             ))}

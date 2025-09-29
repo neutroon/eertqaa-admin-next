@@ -194,7 +194,7 @@ export default function LeadCard({
               </span>
             </div>
             <p className="text-sm text-gray-700 line-clamp-2">{lead.message}</p>
-            {lead.message.length > 100 && (
+            {lead.message?.length > 100 && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
                 className="text-xs text-blue-600 hover:text-blue-500 mt-1"
