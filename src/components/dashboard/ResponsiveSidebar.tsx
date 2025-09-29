@@ -20,7 +20,7 @@ import {
   UsersIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader } from "lucide-react";
+import { Loader, LogOutIcon } from "lucide-react";
 
 const navigation = [
   { name: "الرئيسية", href: "/dashboard", icon: HomeIcon },
@@ -64,7 +64,7 @@ const stats = [
 
 export default function ResponsiveSidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(true);
   const pathname = usePathname();
   const [isLoading, setIsLoading] = useState(false);
   const { user, logout } = useAuth();
@@ -97,13 +97,19 @@ export default function ResponsiveSidebar() {
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 w-80 bg-white shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed inset-y-0 right-0 z-50 w-80 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "translate-x-full"
-        } lg:static lg:inset-0 lg:flex lg:flex-col lg:w-80 lg:shadow-none lg:border-l lg:border-gray-200`}
+        } lg:static lg:inset-0 lg:flex lg:flex-col ${
+          collapsed ? "lg:w-16" : "lg:w-80"
+        } lg:shadow-none lg:border-l lg:border-gray-200`}
       >
         <div className="sticky top-0 bottom-0">
           {/* Sidebar header */}
-          <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <div
+            className={`flex items-center justify-between h-16 border-b border-gray-200 ${
+              collapsed ? "px-3" : "px-6"
+            }`}
+          >
             <div className="flex items-center">
               <div className="flex-shrink-0">
                 <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
@@ -154,18 +160,25 @@ export default function ResponsiveSidebar() {
           )}
 
           {/* Navigation */}
-          <nav className="flex-1 px-4 py-4 space-y-2 overflow-y-auto sidebar-scroll">
+          <nav
+            className={`flex-1 py-4 space-y-2 overflow-y-auto sidebar-scroll ${
+              collapsed ? "px-2" : "px-4"
+            }`}
+          >
             {navigation.map((item) => {
               const isActive = pathname === item.href;
               return (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+                  className={`group flex items-center text-sm font-medium rounded-lg transition-all duration-200 ${
+                    collapsed ? "px-2 py-3 justify-center" : "px-3 py-2"
+                  } ${
                     isActive
                       ? "bg-blue-50 text-blue-700 border-r-4 border-blue-700"
                       : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                  } ${collapsed ? "justify-center" : ""}`}
+                  }`}
+                  title={collapsed ? item.name : undefined}
                 >
                   <item.icon
                     className={`w-5 h-5 ${
@@ -216,19 +229,23 @@ export default function ResponsiveSidebar() {
           )}
 
           {/* User section */}
-          <div className="p-4 border-t border-gray-200">
+          <div
+            className={`border-t border-t-gray-200 ${
+              collapsed ? "p-2 pt-7" : "p-4"
+            }`}
+          >
             <div
               className={`flex items-center ${
                 collapsed ? "justify-center" : ""
               }`}
             >
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
-                  <UserIcon className="w-5 h-5 text-gray-600" />
-                </div>
-              </div>
               {!collapsed && (
                 <>
+                  <div className="flex-shrink-0">
+                    <div className="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center">
+                      <UserIcon className="w-5 h-5 text-gray-600" />
+                    </div>
+                  </div>
                   <div className="mr-3 flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate">
                       {user?.name || "المدير"}
@@ -252,6 +269,23 @@ export default function ResponsiveSidebar() {
                     )}
                   </button>
                 </>
+              )}
+              {collapsed && (
+                <button
+                  onClick={async () => {
+                    setIsLoading(true);
+                    await logout();
+                    setIsLoading(false);
+                  }}
+                  className="w-8 h-8 flex items-center justify-center absolute bottom-0 start-4 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+                  title="تسجيل الخروج"
+                >
+                  {isLoading ? (
+                    <Loader className="w-4 h-4 text-gray-500" />
+                  ) : (
+                    <LogOutIcon className="w-4 h-4 text-gray-500" />
+                  )}
+                </button>
               )}
             </div>
           </div>
