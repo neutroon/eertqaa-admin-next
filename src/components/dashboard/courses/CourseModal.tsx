@@ -50,29 +50,29 @@ export default function CourseModal({
       // Editing existing course
       setFormData({
         title: course.title || "",
-        description: course.description || "",
+        // description: course.description || "",
         duration: course.duration || 0,
         price: course.price || 0,
         availableSeats: course.availableSeats || 0,
         imageUrl: course.imageUrl || "",
         categoryId: course.categoryId || "",
         summary: course.summary || "",
-        features: course.features || [],
+        // features: course.features?.map((f) => f.name) || [],
       });
     } else {
       // Creating new course - reset form
       setFormData({
         title: "",
         description: "",
-        categoryId: "",
-        price: 0,
-        imageUrl: "",
         summary: "",
         duration: 0,
+        categoryId: "",
         availableSeats: 0,
-        createdAt: "",
-        updatedAt: "",
-        features: [],
+        // price: 0,
+        // imageUrl: "",
+        // createdAt: "",
+        // updatedAt: "",
+        // features: [],
       });
     }
   }, [course]);
@@ -128,35 +128,35 @@ export default function CourseModal({
     setFormData((prev: any) => ({
       ...prev,
       [name]:
-        name === "duration" || name === "price" || name === "availableSeats"
+        name === "duration" || name === "availableSeats"
           ? Number(value)
           : value,
     }));
   };
 
   // Available features options
-  const availableFeatures = [
-    "دعم فني",
-    "مرونة في التعلم",
-    "شهادة معتمدة",
-    "مواد تعليمية شاملة",
-    "تطبيقات عملية",
-    "متابعة فردية",
-  ];
+  // const availableFeatures = [
+  //   "دعم فني",
+  //   "مرونة في التعلم",
+  //   "شهادة معتمدة",
+  //   "مواد تعليمية شاملة",
+  //   "تطبيقات عملية",
+  //   "متابعة فردية",
+  // ];
 
-  const handleFeatureToggle = (featureName: string) => {
-    setFormData((prev: any) => {
-      const currentFeatures = prev.features || [];
-      const isSelected = currentFeatures.includes(featureName);
+  // const handleFeatureToggle = (featureName: string) => {
+  //   setFormData((prev: any) => {
+  //     const currentFeatures = prev.features || [];
+  //     const isSelected = currentFeatures.includes(featureName);
 
-      return {
-        ...prev,
-        features: isSelected
-          ? currentFeatures.filter((f: string) => f !== featureName)
-          : [...currentFeatures, featureName],
-      };
-    });
-  };
+  //     return {
+  //       ...prev,
+  //       features: isSelected
+  //         ? currentFeatures.filter((f: string) => f !== featureName)
+  //         : [...currentFeatures, featureName],
+  //     };
+  //   });
+  // };
 
   return (
     <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
@@ -249,7 +249,7 @@ export default function CourseModal({
                 value={formData.availableSeats}
                 onChange={handleChange}
                 required
-                min="1"
+                min="0"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -271,7 +271,7 @@ export default function CourseModal({
             </div> */}
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               وصف البرنامج
             </label>
@@ -282,7 +282,7 @@ export default function CourseModal({
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
+          </div> */}
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -298,7 +298,7 @@ export default function CourseModal({
             />
           </div>
 
-          <div>
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               المميزات
             </label>
@@ -326,9 +326,9 @@ export default function CourseModal({
               <div className="mt-2">
                 <p className="text-sm text-gray-600 mb-1">الميزات المحددة:</p>
                 <div className="flex flex-wrap gap-1">
-                  {formData.features.map((feature: string) => (
+                  {formData.features.map((feature: any) => (
                     <span
-                      key={feature}
+                      key={feature.id}
                       className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
                     >
                       {feature}
@@ -344,7 +344,7 @@ export default function CourseModal({
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
 
           <div className="flex justify-end space-x-3 pt-4">
             <button

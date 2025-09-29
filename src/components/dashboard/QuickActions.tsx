@@ -33,8 +33,8 @@ export default function QuickActions() {
       color: "bg-purple-500 hover:bg-purple-600",
     },
     {
-      name: "إدارة الشهادات",
-      description: "إصدار وإدارة الشهادات",
+      name: "إدارة التعليقات",
+      description: "إصدار وإدارة التعليقات",
       href: "/dashboard/testimonials",
       icon: DocumentTextIcon,
       color: "bg-orange-500 hover:bg-orange-600",

@@ -11,8 +11,10 @@ import {
   KeyIcon,
   ChartBarIcon,
 } from "@heroicons/react/24/outline";
+import ComingSoonOverlay from "@/components/common/ComingSoonOverlay";
 
 export default function SettingsPage() {
+  const [showComingSoon, setShowComingSoon] = useState(true);
   const [activeTab, setActiveTab] = useState("general");
 
   const tabs = [
@@ -27,64 +29,75 @@ export default function SettingsPage() {
   ];
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">الإعدادات</h1>
-            <p className="text-gray-600 mt-1">إدارة إعدادات النظام والمنصة</p>
+    <>
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">الإعدادات</h1>
+              <p className="text-gray-600 mt-1">إدارة إعدادات النظام والمنصة</p>
+            </div>
+            <div className="flex items-center space-x-3">
+              <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                إعادة تعيين
+              </button>
+              <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                حفظ التغييرات
+              </button>
+            </div>
           </div>
-          <div className="flex items-center space-x-3">
-            <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              إعادة تعيين
-            </button>
-            <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-              حفظ التغييرات
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar Navigation */}
-        <div className="lg:col-span-1">
-          <nav className="space-y-1">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    activeTab === tab.id
-                      ? "bg-blue-50 text-blue-700 border-r-4 border-blue-700"
-                      : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                  }`}
-                >
-                  <Icon className="w-5 h-5 ml-3" />
-                  {tab.name}
-                </button>
-              );
-            })}
-          </nav>
         </div>
 
-        {/* Main Content */}
-        <div className="lg:col-span-3">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            {activeTab === "general" && <GeneralSettings />}
-            {activeTab === "users" && <UserSettings />}
-            {activeTab === "security" && <SecuritySettings />}
-            {activeTab === "notifications" && <NotificationSettings />}
-            {activeTab === "platform" && <PlatformSettings />}
-            {activeTab === "reports" && <ReportSettings />}
-            {activeTab === "api" && <ApiSettings />}
-            {activeTab === "analytics" && <AnalyticsSettings />}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Sidebar Navigation */}
+          <div className="lg:col-span-1">
+            <nav className="space-y-1">
+              {tabs.map((tab) => {
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      activeTab === tab.id
+                        ? "bg-blue-50 text-blue-700 border-r-4 border-blue-700"
+                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 ml-3" />
+                    {tab.name}
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+              {activeTab === "general" && <GeneralSettings />}
+              {activeTab === "users" && <UserSettings />}
+              {activeTab === "security" && <SecuritySettings />}
+              {activeTab === "notifications" && <NotificationSettings />}
+              {activeTab === "platform" && <PlatformSettings />}
+              {activeTab === "reports" && <ReportSettings />}
+              {activeTab === "api" && <ApiSettings />}
+              {activeTab === "analytics" && <AnalyticsSettings />}
+            </div>
           </div>
         </div>
+
+        {/* Coming Soon Overlay */}
+        <ComingSoonOverlay
+          isOpen={showComingSoon}
+          onClose={() => setShowComingSoon(false)}
+          title="الإعدادات"
+          description="صفحة الإعدادات قيد التطوير. ستتمكن من تخصيص إعدادات المنصة قريباً."
+          expectedDate="👀"
+        />
       </div>
-    </div>
+    </>
   );
 }
 

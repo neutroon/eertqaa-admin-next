@@ -63,7 +63,7 @@ export default function CourseManagement({
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
     const matchesCategory =
-      selectedCategory === "all" || course.category.name === selectedCategory;
+      selectedCategory === "all" || course.category?.name === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -164,7 +164,7 @@ export default function CourseManagement({
                   {category.name}
                 </p>
                 <p className="text-xs text-gray-500">
-                  {category.courses.length} برنامج
+                  {category.courses?.length || 0} برنامج
                 </p>
               </div>
             </div>
@@ -221,7 +221,7 @@ export default function CourseManagement({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                      {course.category.name}
+                      {course.category?.name || "غير محدد"}
                     </span>
                   </td>
                   {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -239,21 +239,20 @@ export default function CourseManagement({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        course.status === "active" &&
-                        "bg-green-100 text-green-800"
+                        course.availableSeats == 0 && "bg-red-100 text-red-800"
                       }${
-                        course.status === "completed" &&
-                        "bg-purple-100 text-purple-800"
+                        course.availableSeats > 0 &&
+                        "bg-purple-100 text-green-800"
                       }${
                         course.status === "inactive" &&
-                        "bg-red-100 text-red-800"
+                        "bg-purple-100 text-purple-800"
                       }`}
                     >
-                      {course.status === "active"
-                        ? "نشط"
-                        : course.status === "completed"
+                      {course.availableSeats === 0
                         ? "مكتمل"
-                        : "غير نشط"}
+                        : course.availableSeats > 0
+                        ? "متاح"
+                        : "غير متاح"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">

@@ -136,42 +136,6 @@ export default function LeadsManagement({
     }
   };
 
-  //   const exportLeads = () => {
-  //     const csvContent = [
-  //       [
-  //         "الاسم",
-  //         "رقم الهاتف",
-  //         "البرنامج",
-  //         "تفضيل التعلم",
-  //         "الحالة",
-  //         "تاريخ الإنشاء",
-  //       ],
-  //       ...filteredLeads.map((lead) => [
-  //         lead.name,
-  //         lead.phone,
-  //         lead.selectedProgram,
-  //         lead.learningPreference,
-  //         getStatusText(lead.status),
-  //         new Date(lead.createdAt).toLocaleDateString("ar-SA"),
-  //       ]),
-  //     ]
-  //       .map((row) => row.join(","))
-  //       .join("\n");
-
-  //     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-  //     const link = document.createElement("a");
-  //     const url = URL.createObjectURL(blob);
-  //     link.setAttribute("href", url);
-  //     link.setAttribute(
-  //       "download",
-  //       `leads-${new Date().toISOString().split("T")[0]}.csv`
-  //     );
-  //     link.style.visibility = "hidden";
-  //     document.body.appendChild(link);
-  //     link.click();
-  //     document.body.removeChild(link);
-  //   };
-
   return (
     <div className="space-y-6">
       {/* Header Actions */}
@@ -218,8 +182,9 @@ export default function LeadsManagement({
           </button> */}
 
         <button
+          disabled
           onClick={handleCreateLead}
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 border border-transparent rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <PlusIcon className="w-4 h-4 ml-2" />
           إضافة عميل محتمل

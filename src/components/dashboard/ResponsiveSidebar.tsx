@@ -25,17 +25,17 @@ import { Loader, LogOutIcon } from "lucide-react";
 const navigation = [
   { name: "الرئيسية", href: "/dashboard", icon: HomeIcon },
   { name: "إدارة البرامج", href: "/dashboard/courses", icon: BookOpenIcon },
-  // { name: "إدارة المتدربين", href: "/dashboard/students", icon: UserGroupIcon },
   { name: "العملاء المحتملين", href: "/dashboard/leads", icon: UsersIcon },
-  // {
-  //   name: "التقارير والتحليلات",
-  //   href: "/dashboard/analytics",
-  //   icon: ChartBarIcon,
-  // },
+  { name: "إدارة المتدربين", href: "/dashboard/students", icon: UserGroupIcon },
   {
     name: "إدارة التعليقات",
     href: "/dashboard/testimonials",
     icon: ChatBubbleLeftRightIcon,
+  },
+  {
+    name: "التقارير والتحليلات",
+    href: "/dashboard/analytics",
+    icon: ChartBarIcon,
   },
   { name: "الإعدادات", href: "/dashboard/settings", icon: Cog6ToothIcon },
 ];
@@ -146,7 +146,7 @@ export default function ResponsiveSidebar() {
           </div>
 
           {/* Search bar */}
-          {!collapsed && (
+          {/* {!collapsed && (
             <div className="p-4 border-b border-gray-200">
               <div className="relative">
                 <MagnifyingGlassIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
@@ -157,7 +157,7 @@ export default function ResponsiveSidebar() {
                 />
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Navigation */}
           <nav
