@@ -193,7 +193,7 @@ export default function CourseManagement({
                   المدة (شهر)
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  ملخص المحتوي
+                  الوصف
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                   المقاعد المتاحة
@@ -231,7 +231,7 @@ export default function CourseManagement({
                     {course.duration}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {course.summary}
+                    {course.description}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {course.availableSeats}
@@ -268,9 +268,9 @@ export default function CourseManagement({
                     >
                       <TrashIcon className="w-4 h-4" />
                     </button>
-                    <button className="text-gray-600 hover:text-gray-900">
+                    {/* <button className="text-gray-600 hover:text-gray-900">
                       <EyeIcon className="w-4 h-4" />
-                    </button>
+                    </button> */}
                   </td>
                 </tr>
               ))}
