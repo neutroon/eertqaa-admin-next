@@ -1,6 +1,8 @@
-import ResponsiveSidebar from "@/components/dashboard/ResponsiveSidebar";
+import AppSidebar from "@/components/dashboard/AppSidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { AnimatePresence } from "framer-motion";
 
 export default function DashboardLayout({
   children,
@@ -9,13 +11,15 @@ export default function DashboardLayout({
 }) {
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50 flex">
-        <ResponsiveSidebar />
-        <div className="flex-1 flex flex-col min-h-screen">
-          <DashboardHeader />
-          <main className="flex-1 p-4 lg:p-6 overflow-auto">{children}</main>
-        </div>
-      </div>
+      <SidebarProvider defaultOpen={false}>
+        <AnimatePresence mode="wait">
+          <AppSidebar />
+          <SidebarInset className="w-[calc(100%-var(--sidebar-width))]">
+            <DashboardHeader />
+            <main className="p-4 lg:p-6">{children}</main>
+          </SidebarInset>
+        </AnimatePresence>
+      </SidebarProvider>
     </ProtectedRoute>
   );
 }
