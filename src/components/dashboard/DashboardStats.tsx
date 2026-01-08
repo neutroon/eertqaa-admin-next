@@ -4,69 +4,105 @@ import {
   BookOpenIcon,
   UserGroupIcon,
   ClipboardDocumentListIcon,
-  ChartBarIcon,
+  ClockIcon,
 } from "@heroicons/react/24/outline";
 
-const stats = [
-  {
-    name: "إجمالي البرامج",
-    value: "30",
-    change: "+2",
-    changeType: "positive",
-    icon: BookOpenIcon,
-    color: "bg-blue-500",
-  },
-  {
-    name: "إجمالي المتدربين",
-    value: "1,234",
-    change: "+12%",
-    changeType: "positive",
-    icon: UserGroupIcon,
-    color: "bg-green-500",
-  },
-  {
-    name: "التسجيلات الجديدة",
-    value: "89",
-    change: "+5",
-    changeType: "positive",
-    icon: ClipboardDocumentListIcon,
-    color: "bg-yellow-500",
-  },
-  {
-    name: "معدل الإكمال",
-    value: "87%",
-    change: "+3%",
-    changeType: "positive",
-    icon: ChartBarIcon,
-    color: "bg-purple-500",
-  },
-];
+interface DashboardStatsProps {
+  totalCourses: number;
+  totalStudents: number;
+  newStudents: number;
+  pendingLeads: number;
+}
 
-export default function DashboardStats() {
+export default function DashboardStats({
+  totalCourses,
+  totalStudents,
+  newStudents,
+  pendingLeads,
+}: DashboardStatsProps) {
+  const stats = [
+    {
+      name: "إجمالي البرامج",
+      value: totalCourses,
+      icon: BookOpenIcon,
+      gradient: "from-blue-500 to-blue-600",
+      bgColor: "bg-blue-50",
+      iconColor: "text-blue-600",
+      change: "+2",
+      changePositive: true,
+    },
+    {
+      name: "إجمالي المتدربين",
+      value: totalStudents,
+      icon: UserGroupIcon,
+      gradient: "from-green-500 to-emerald-600",
+      bgColor: "bg-green-50",
+      iconColor: "text-green-600",
+      change: "+12%",
+      changePositive: true,
+    },
+    {
+      name: "التسجيلات الجديدة",
+      value: newStudents,
+      subtext: "هذا الشهر",
+      icon: ClipboardDocumentListIcon,
+      gradient: "from-yellow-500 to-orange-500",
+      bgColor: "bg-yellow-50",
+      iconColor: "text-yellow-600",
+      change: `+${newStudents}`,
+      changePositive: true,
+    },
+    {
+      name: "في الانتظار",
+      value: pendingLeads,
+      subtext: "يحتاج متابعة",
+      icon: ClockIcon,
+      gradient: "from-purple-500 to-pink-600",
+      bgColor: "bg-purple-50",
+      iconColor: "text-purple-600",
+      change: pendingLeads > 0 ? "عاجل" : "ممتاز",
+      changePositive: pendingLeads === 0,
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
       {stats.map((stat) => (
-        <div key={stat.name} className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center">
-            <div className={`p-3 rounded-lg ${stat.color}`}>
-              <stat.icon className="w-6 h-6 text-white" />
+        <div
+          key={stat.name}
+          className="group relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+        >
+          {/* Gradient background on hover */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+
+          <div className="relative z-10">
+            <div className="flex items-start justify-between mb-4">
+              <div className={`p-3 rounded-xl ${stat.bgColor} group-hover:scale-110 transition-transform duration-300`}>
+                <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
+              </div>
+              {stat.change && (
+                <span
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${stat.changePositive
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
+                    }`}
+                >
+                  {stat.change}
+                </span>
+              )}
             </div>
-            <div className="mr-4">
-              <p className="text-sm font-medium text-gray-600">{stat.name}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+
+            <div>
+              <p className="text-sm font-medium text-gray-600 mb-1">
+                {stat.name}
+              </p>
+              <p className="text-3xl font-bold text-gray-900 mb-1">
+                {stat.value.toLocaleString("ar-EG")}
+              </p>
+              {stat.subtext && (
+                <p className="text-xs text-gray-500">{stat.subtext}</p>
+              )}
             </div>
-          </div>
-          <div className="mt-4">
-            <span
-              className={`text-sm font-medium ${
-                stat.changeType === "positive"
-                  ? "text-green-600"
-                  : "text-red-600"
-              }`}
-            >
-              {stat.change}
-            </span>
-            <span className="text-sm text-gray-500 mr-2">من الشهر الماضي</span>
           </div>
         </div>
       ))}
