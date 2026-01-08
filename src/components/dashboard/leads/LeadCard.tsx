@@ -8,8 +8,8 @@ import {
   SpeakerWaveIcon,
   CalendarIcon,
   ChatBubbleLeftRightIcon,
-  ChevronDownIcon,
 } from "@heroicons/react/24/outline";
+import StatusSelect from "./StatusSelect";
 import { Lead } from "@/config/api";
 import { formatPhoneNumber } from "@/utils/validation";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
@@ -105,50 +105,12 @@ export default function LeadCard({
             </h4>
 
             {/* Status Dropdown */}
-            <div className="relative" ref={dropdownRef}>
-              <button
-                onClick={() => setShowStatusDropdown(!showStatusDropdown)}
-                disabled={isUpdatingStatus}
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium transition-colors hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${getStatusBadgeColor(
-                  lead.status
-                )} ${
-                  isUpdatingStatus
-                    ? "opacity-50 cursor-not-allowed"
-                    : "cursor-pointer"
-                }`}
-              >
-                {isUpdatingStatus ? (
-                  <LoadingSpinner size="sm" className="ml-1" />
-                ) : (
-                  <ChevronDownIcon className="w-3 h-3 ml-1" />
-                )}
-                {getStatusText(lead.status)}
-              </button>
-
-              {showStatusDropdown && !isUpdatingStatus && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
-                  <div className="py-1">
-                    {statusOptions.map((option) => (
-                      <button
-                        key={option.value}
-                        onClick={() => handleStatusChange(option.value)}
-                        className={`w-full text-right px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                          option.value === lead.status
-                            ? "bg-gray-50 font-medium"
-                            : ""
-                        }`}
-                      >
-                        <span
-                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${option.color}`}
-                        >
-                          {option.label}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+            <StatusSelect
+              status={lead.status}
+              onChange={(newStatus) => onStatusChange(lead.id, newStatus)}
+              isLoading={isUpdatingStatus}
+              disabled={isUpdatingStatus}
+            />
           </div>
 
           {/* Contact Info */}
