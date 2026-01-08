@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap");
+@import "tw-animate-css";
 @import "tailwindcss";
 
 @layer base {
@@ -59,8 +61,6 @@
 } */
 
 /* Arabic Font Support */
-@import url("https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap");
-@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
