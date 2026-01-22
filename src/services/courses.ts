@@ -7,6 +7,7 @@ import {
   UpdateCourseRequest,
   CoursesResponse,
   ApiResponse,
+  SelectedCoursesResponse,
 } from "@/config/api";
 
 export class CoursesService {
@@ -15,6 +16,23 @@ export class CoursesService {
     try {
       const response = await apiService.get<CoursesResponse>(
         API_CONFIG.ENDPOINTS.COURSES.GET_ALL
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Failed to fetch courses");
+      }
+    } catch (error: any) {
+      console.error("Get courses error:", error);
+      throw error;
+    }
+  }
+
+  async getSelectedCourses(): Promise<SelectedCoursesResponse> {
+    try {
+      const response = await apiService.get<SelectedCoursesResponse>(
+        API_CONFIG.ENDPOINTS.COURSES.GET_SELECTED
       );
 
       if (response.success && response.data) {

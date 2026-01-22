@@ -1,3 +1,5 @@
+import { selectedProgram } from "@/config/api";
+
 // Phone number validation patterns
 export const PHONE_PATTERNS = {
   EGYPT: {
@@ -170,7 +172,7 @@ export function validateVoiceMessage(voiceMessage: string): ValidationResult {
 export function validateCreateLead(data: {
   name: string;
   phone: string;
-  selectedProgram: string;
+  selectedProgram: selectedProgram;
   learningPreference: string;
   message: string;
   voiceMessage: string;
@@ -179,7 +181,7 @@ export function validateCreateLead(data: {
 
   const nameValidation = validateName(data.name);
   const phoneValidation = validatePhoneNumber(data.phone);
-  const programValidation = validateProgram(data.selectedProgram);
+  const programValidation = validateProgram(data.selectedProgram.name);
   const preferenceValidation = validateLearningPreference(
     data.learningPreference
   );

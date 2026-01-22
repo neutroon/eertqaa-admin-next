@@ -6,14 +6,39 @@ import {
   UpdateLeadRequest,
   LeadsResponse,
   ApiResponse,
+  LeadsStatsResponse,
+  LeadFeedback,
+  AddLeadFeedbackRequest,
 } from "@/config/api";
 
 export class LeadsService {
   // Get all leads
-  async getAllLeads(): Promise<LeadsResponse> {
+  async getAllLeads(params?: {
+    page?: number;
+    limit?: number;
+    status?: string;
+    isLocked?: string;
+    search?: string;
+    assignedToSalesId?: string;
+    "orderBy.createdAt"?: "asc" | "desc";
+  }): Promise<LeadsResponse> {
     try {
+      // Map searchTerm to name for the API if needed, or pass directly
+      const queryParams: Record<string, string> = {};
+      if (params?.page) queryParams.page = params.page.toString();
+      if (params?.limit) queryParams.limit = params.limit.toString();
+      if (params?.status && params.status !== "")
+        queryParams.status = params.status;
+      if (params?.isLocked) queryParams.isLocked = params.isLocked;
+      if (params?.search) queryParams.search = params.search;
+      if (params?.assignedToSalesId)
+        queryParams.assignedToSalesId = params.assignedToSalesId;
+      if (params?.["orderBy.createdAt"])
+        queryParams["orderBy.createdAt"] = params["orderBy.createdAt"];
+
       const response = await apiService.get<LeadsResponse>(
-        API_CONFIG.ENDPOINTS.LEADS.GET_ALL
+        API_CONFIG.ENDPOINTS.LEADS.GET_ALL,
+        queryParams
       );
 
       if (response.success && response.data) {
@@ -23,6 +48,24 @@ export class LeadsService {
       }
     } catch (error: any) {
       console.error("Get leads error:", error);
+      throw error;
+    }
+  }
+
+  // Get leads stats
+  async getLeadsStats(): Promise<LeadsStatsResponse> {
+    try {
+      const response = await apiService.get<LeadsStatsResponse>(
+        API_CONFIG.ENDPOINTS.LEADS.STATS
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Failed to fetch leads stats");
+      }
+    } catch (error: any) {
+      console.error("Get leads stats error:", error);
       throw error;
     }
   }
@@ -87,6 +130,25 @@ export class LeadsService {
     }
   }
 
+  // Add feedback to a lead
+  async addLeadFeedback(feedbackData: any): Promise<LeadFeedback> {
+    try {
+      const response = await apiService.post<LeadFeedback>(
+        `/api/v1/leads/feedback`,
+        feedbackData
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Failed to add lead feedback");
+      }
+    } catch (error: any) {
+      console.error("Add lead feedback error:", error);
+      throw error;
+    }
+  }
+
   // Delete a lead
   async deleteLead(leadId: string): Promise<void> {
     try {
@@ -99,6 +161,59 @@ export class LeadsService {
       }
     } catch (error: any) {
       console.error("Delete lead error:", error);
+      throw error;
+    }
+  }
+
+  async updateLeadIsLocked(leadId: string, isLocked: boolean): Promise<Lead> {
+    try {
+      const response = await apiService.put<Lead>(
+        `${API_CONFIG.ENDPOINTS.LEADS.UPDATE}/${leadId}`,
+        { isLocked }
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Failed to update lead isLocked");
+      }
+    } catch (error: any) {
+      console.error("Update lead isLocked error:", error);
+      throw error;
+    }
+  }
+
+  async getLeadById(leadId: string): Promise<Lead> {
+    try {
+      const response = await apiService.get<Lead>(
+        `${API_CONFIG.ENDPOINTS.LEADS.GET_BY_ID}/${leadId}`
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Failed to get lead by id");
+      }
+    } catch (error: any) {
+      console.error("Get lead by id error:", error);
+      throw error;
+    }
+  }
+
+  async claimLead(leadId: string): Promise<Lead> {
+    try {
+      const response = await apiService.post<Lead>(
+        `${API_CONFIG.ENDPOINTS.LEADS.CLAIM}/${leadId}`,
+        {}
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Failed to claim lead");
+      }
+    } catch (error: any) {
+      console.error("Claim lead error:", error);
       throw error;
     }
   }
