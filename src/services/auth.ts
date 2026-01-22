@@ -62,11 +62,11 @@ export class AuthService {
   // Get current user profile
   async getProfile(): Promise<any> {
     try {
-      const response = await apiService.get(API_CONFIG.ENDPOINTS.ADMIN.PROFILE);
+      const response = await apiService.get(API_CONFIG.ENDPOINTS.AUTH.PROFILE);
 
       if (response.success && response.data) {
         // Update stored user data
-        localStorage.setItem("adminUser", JSON.stringify(response.data));
+        localStorage.setItem("user", JSON.stringify(response.data));
         return response.data;
       } else {
         throw new Error(response.message || "Failed to fetch profile");
@@ -116,10 +116,10 @@ export class AuthService {
   // Verify authentication with server (checks if cookie is valid)
   async verifyAuthentication(): Promise<boolean> {
     try {
-      const response = await apiService.get(API_CONFIG.ENDPOINTS.ADMIN.PROFILE);
+      const response = await apiService.get(API_CONFIG.ENDPOINTS.AUTH.PROFILE);
       if (response.success && response.data) {
         // Update stored user data with fresh data from server
-        localStorage.setItem("adminUser", JSON.stringify(response.data));
+        localStorage.setItem("user", JSON.stringify(response.data));
         localStorage.setItem("isAuthenticated", "true");
         return true;
       }
