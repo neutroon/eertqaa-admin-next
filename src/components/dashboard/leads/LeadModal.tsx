@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { Lead, CreateLeadRequest, UpdateLeadRequest } from "@/config/api";
+import { Lead, CreateLeadRequest, UpdateLeadRequest, selectedProgram } from "@/config/api";
 import { leadsService } from "@/services/leads";
 import {
   validateCreateLead,
@@ -31,7 +31,7 @@ export default function LeadModal({
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
-    selectedProgram: "",
+    selectedProgram: {} as selectedProgram,
     learningPreference: "",
     message: "",
     voiceMessage: "",
@@ -48,7 +48,7 @@ export default function LeadModal({
         setFormData({
           name: lead.name || "",
           phone: lead.phone || "",
-          selectedProgram: lead.selectedProgram || "",
+          selectedProgram: lead.selectedProgram || { name: "" },
           learningPreference: lead.learningPreference || "",
           message: lead.message || "",
           voiceMessage: lead.voiceMessage || "",
@@ -58,7 +58,7 @@ export default function LeadModal({
         setFormData({
           name: "",
           phone: "",
-          selectedProgram: "",
+          selectedProgram: { name: "" },
           learningPreference: "",
           message: "",
           voiceMessage: "",
@@ -91,11 +91,11 @@ export default function LeadModal({
     // Validate form data
     const validation = isEditing
       ? validateUpdateLead({
-          name: formData.name,
-          selectedProgram: formData.selectedProgram,
-          learningPreference: formData.learningPreference,
-          message: formData.message,
-        })
+        name: formData.name,
+        selectedProgram: formData.selectedProgram.name,
+        learningPreference: formData.learningPreference,
+        message: formData.message,
+      })
       : validateCreateLead(formData);
 
     if (!validation.isValid) {
@@ -214,11 +214,10 @@ export default function LeadModal({
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                className={`block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  getFieldError(errors, "name")
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                }`}
+                className={`block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${getFieldError(errors, "name")
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-300"
+                  }`}
                 placeholder="أدخل اسم العميل"
               />
               {getFieldError(errors, "name") && (
@@ -248,13 +247,12 @@ export default function LeadModal({
                 value={formData.phone}
                 onChange={handleInputChange}
                 disabled={isEditing}
-                className={`block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  isEditing
-                    ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-                    : getFieldError(errors, "phone")
+                className={`block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${isEditing
+                  ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+                  : getFieldError(errors, "phone")
                     ? "border-red-300 bg-red-50"
                     : "border-gray-300"
-                }`}
+                  }`}
                 placeholder="01012345678"
                 dir="ltr"
               />
@@ -281,13 +279,12 @@ export default function LeadModal({
               <select
                 id="selectedProgram"
                 name="selectedProgram"
-                value={formData.selectedProgram}
+                value={formData.selectedProgram.name}
                 onChange={handleInputChange}
-                className={`block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  getFieldError(errors, "selectedProgram")
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                }`}
+                className={`block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${getFieldError(errors, "selectedProgram")
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-300"
+                  }`}
               >
                 <option value="">اختر البرنامج</option>
                 {programOptions.map((program) => (
@@ -316,11 +313,10 @@ export default function LeadModal({
                 name="learningPreference"
                 value={formData.learningPreference}
                 onChange={handleInputChange}
-                className={`block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  getFieldError(errors, "learningPreference")
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                }`}
+                className={`block w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${getFieldError(errors, "learningPreference")
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-300"
+                  }`}
               >
                 <option value="">اختر تفضيل التعلم</option>
                 {learningPreferenceOptions.map((preference) => (
@@ -350,11 +346,10 @@ export default function LeadModal({
                 rows={4}
                 value={formData.message}
                 onChange={handleInputChange}
-                className={`block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  getFieldError(errors, "message")
-                    ? "border-red-300 bg-red-50"
-                    : "border-gray-300"
-                }`}
+                className={`block w-full px-3 py-2 border rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${getFieldError(errors, "message")
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-300"
+                  }`}
                 placeholder="أدخل رسالة العميل..."
               />
               {getFieldError(errors, "message") && (

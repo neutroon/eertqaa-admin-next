@@ -5,6 +5,7 @@ import { ar } from "date-fns/locale";
 import { Lead } from "@/config/api";
 
 interface RecentRegistrationsProps {
+  total: number;
   leads: Lead[];
 }
 
@@ -22,14 +23,14 @@ const statusLabels = {
   rejected: "غير مهتم",
 };
 
-export default function RecentRegistrations({ leads }: RecentRegistrationsProps) {
+export default function RecentRegistrations({ leads, total }: RecentRegistrationsProps) {
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-100">
       <div className="px-6 py-4 border-b border-gray-200">
         <h3 className="text-lg font-medium text-gray-900">أحدث العملاء</h3>
       </div>
       <div className="divide-y divide-gray-200">
-        {leads.length === 0 ? (
+        {total === 0 ? (
           <div className="px-6 py-8 text-center text-gray-500">
             لا توجد عملاء حتى الآن
           </div>
@@ -51,7 +52,7 @@ export default function RecentRegistrations({ leads }: RecentRegistrationsProps)
                         {lead.name}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {lead.selectedProgram}
+                        {lead?.selectedProgram?.name}
                       </p>
                     </div>
                   </div>
