@@ -8,25 +8,34 @@ import PopularCourses from "@/components/dashboard/PopularCourses";
 import QuickActions from "@/components/dashboard/QuickActions";
 import { leadsService } from "@/services/leads";
 import { coursesService } from "@/services/courses";
-import { Lead, Course } from "@/config/api";
+import { Lead, LeadsStatsResponse, SelectedCourse } from "@/config/api";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function DashboardPage() {
-  const [leads, setLeads] = useState<Lead[]>([]);
-  const [courses, setCourses] = useState<Course[]>([]);
+  const [leadsData, setLeadsData] = useState<{ total: number; leads: Lead[] }>({
+    total: 0,
+    leads: [],
+  });
+  const [selectedCourses, setSelectedCourses] = useState<SelectedCourse>({
+    total: 0,
+    selectedPrograms: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [leadsStats, setLeadsStats] = useState<LeadsStatsResponse>({ claimedLeads: 0, unclaimedLeads: 0, totalLeads: 0, newLeadsThisMonth: 0, pendingLeads: 0, contactedLeads: 0, convertedLeads: 0, rejectedLeads: 0, success: false });
 
   useEffect(() => {
     async function fetchData() {
       try {
         setLoading(true);
-        const [leadsData, coursesData] = await Promise.all([
+        const [leadsData, coursesData, leadsStatsData] = await Promise.all([
           leadsService.getAllLeads(),
-          coursesService.getAllCourses(),
+          coursesService.getSelectedCourses(),
+          leadsService.getLeadsStats(),
         ]);
-        setLeads(leadsData.leads || []);
-        setCourses(coursesData.courses || []);
+        setLeadsData(leadsData || []);
+        setSelectedCourses(coursesData);
+        setLeadsStats(leadsStatsData);
       } catch (err: any) {
         console.error("Failed to fetch dashboard data:", err);
         setError(err.message || "فشل في تحميل البيانات");
@@ -37,58 +46,11 @@ export default function DashboardPage() {
     fetchData();
   }, []);
 
-  // Calculate stats
-  const stats = useMemo(() => {
-    const now = new Date();
-    const currentMonth = now.getMonth();
-    const currentYear = now.getFullYear();
-
-    const newLeadsThisMonth = leads.filter((lead) => {
-      const leadDate = new Date(lead.createdAt);
-      return (
-        leadDate.getMonth() === currentMonth &&
-        leadDate.getFullYear() === currentYear
-      );
-    }).length;
-
-    const pendingLeads = leads.filter((l) => l.status === "pending").length;
-
-    return {
-      totalCourses: courses.length,
-      totalStudents: leads.length,
-      newStudents: newLeadsThisMonth,
-      pendingLeads,
-    };
-  }, [leads, courses]);
-
-  // Calculate popular courses from lead selections
-  const popularCourses = useMemo(() => {
-    const programCounts: Record<string, number> = {};
-
-    leads.forEach((lead) => {
-      const program = lead.selectedProgram;
-      programCounts[program] = (programCounts[program] || 0) + 1;
-    });
-
-    return Object.entries(programCounts)
-      .map(([name, enrollments]) => ({
-        id: name,
-        name,
-        category: "برامج إرتقاء",
-        enrollments,
-        rating: 4.8,
-        status: "active" as const,
-      }))
-      .sort((a, b) => b.enrollments - a.enrollments)
-      .slice(0, 5);
-  }, [leads]);
-
-  // Get recent leads
   const recentLeads = useMemo(() => {
-    return [...leads]
+    return [...leadsData.leads]
       .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
       .slice(0, 5);
-  }, [leads]);
+  }, [leadsData]);
 
   if (loading) {
     return (
@@ -116,17 +78,21 @@ export default function DashboardPage() {
 
       {/* Stats Cards */}
       <DashboardStats
-        totalCourses={stats.totalCourses}
-        totalStudents={stats.totalStudents}
-        newStudents={stats.newStudents}
-        pendingLeads={stats.pendingLeads}
+        totalCourses={selectedCourses.total}
+        totalStudents={leadsStats.totalLeads}
+        newStudents={leadsStats.newLeadsThisMonth}
+        pendingLeads={leadsStats.pendingLeads}
+        claimedLeads={leadsStats.claimedLeads}
+        unclaimedLeads={leadsStats.unclaimedLeads}
       />
+      {/* Popular Programs - Full Width */}
+      <PopularCourses total={selectedCourses.total} selectedPrograms={selectedCourses.selectedPrograms} />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Recent Leads - Takes 2 columns */}
         <div className="lg:col-span-2">
-          <RecentRegistrations leads={recentLeads} />
+          <RecentRegistrations leads={recentLeads} total={leadsData.total} />
         </div>
 
         {/* Quick Actions - Takes 1 column */}
@@ -135,8 +101,6 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Popular Programs - Full Width */}
-      <PopularCourses courses={popularCourses} />
     </div>
   );
 }
