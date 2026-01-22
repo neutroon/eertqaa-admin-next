@@ -113,7 +113,7 @@ export default function DashboardHeader() {
                   <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                     {user?.name || "المدير"}
                   </p>
-                  <p className="text-xs text-gray-500">مسؤول النظام</p>
+                  <p className="text-xs text-gray-500">{user?.role}</p>
                 </div>
                 <div className="relative">
                   <div className="w-10 h-10 bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow">

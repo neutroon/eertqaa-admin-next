@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
 import { useState } from "react";
 import {
     HomeIcon,
@@ -11,6 +11,9 @@ import {
     ChatBubbleLeftRightIcon,
     Cog6ToothIcon,
     ArrowRightOnRectangleIcon,
+    InboxIcon,
+    UserPlusIcon,
+    AcademicCapIcon,
 } from "@heroicons/react/24/outline";
 import {
     HomeIcon as HomeIconSolid,
@@ -18,6 +21,9 @@ import {
     BookOpenIcon as BookOpenIconSolid,
     ChatBubbleLeftRightIcon as ChatBubbleLeftRightIconSolid,
     Cog6ToothIcon as Cog6ToothIconSolid,
+    InboxIcon as InboxIconSolid,
+    UserPlusIcon as UserPlusIconSolid,
+    AcademicCapIcon as AcademicCapIconSolid,
 } from "@heroicons/react/24/solid";
 import {
     Sidebar,
@@ -47,14 +53,20 @@ const navigationItems = [
     {
         title: "العملاء المحتملين",
         href: "/dashboard/leads",
-        icon: ChatBubbleLeftRightIcon,
-        activeIcon: ChatBubbleLeftRightIconSolid,
+        icon: InboxIcon,
+        activeIcon: InboxIconSolid,
+    },
+    {
+        title: "عملائي",
+        href: "/dashboard/leads/my-leads",
+        icon: UserPlusIcon,
+        activeIcon: UserPlusIconSolid,
     },
     {
         title: "المتدربين",
         href: "/dashboard/students",
-        icon: UserGroupIcon,
-        activeIcon: UserGroupIconSolid,
+        icon: AcademicCapIcon,
+        activeIcon: AcademicCapIconSolid,
     },
     {
         title: "البرامج",
@@ -136,7 +148,9 @@ export default function AppSidebar() {
                             {navigationItems.map((item) => {
                                 const isActive = pathname === item.href;
                                 const Icon = isActive ? item.activeIcon : item.icon;
-
+                                if (user?.role === UserRole.ADMIN && item.href === "/dashboard/leads/my-leads") {
+                                    return null;
+                                }
                                 return (
                                     <SidebarMenuItem key={item.href}>
                                         <SidebarMenuButton
