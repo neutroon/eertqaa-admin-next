@@ -5,10 +5,16 @@ import { useRouter, usePathname } from "next/navigation";
 import { authService } from "@/services/auth";
 import { ApiError } from "@/config/api";
 
+export enum UserRole {
+  ADMIN = "ADMIN",
+  SALES_AGENT = "SALES_AGENT",
+}
+
 interface User {
   id: string;
   name: string;
   phone: string;
+  role: UserRole;
   createdAt: string;
   updatedAt: string;
 }
