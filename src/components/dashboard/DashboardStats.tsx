@@ -6,12 +6,16 @@ import {
   ClipboardDocumentListIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
+import clsx from "clsx";
+import { CheckCircleIcon, UserCheckIcon, UserPlusIcon } from "lucide-react";
 
 interface DashboardStatsProps {
   totalCourses: number;
   totalStudents: number;
   newStudents: number;
   pendingLeads: number;
+  claimedLeads: number;
+  unclaimedLeads: number;
 }
 
 export default function DashboardStats({
@@ -19,10 +23,12 @@ export default function DashboardStats({
   totalStudents,
   newStudents,
   pendingLeads,
+  claimedLeads,
+  unclaimedLeads,
 }: DashboardStatsProps) {
   const stats = [
     {
-      name: "إجمالي البرامج",
+      name: "البرامج النشطة",
       value: totalCourses,
       icon: BookOpenIcon,
       gradient: "from-blue-500 to-blue-600",
@@ -63,6 +69,32 @@ export default function DashboardStats({
       change: pendingLeads > 0 ? "عاجل" : "ممتاز",
       changePositive: pendingLeads === 0,
     },
+    {
+      name: "عملاء قيد المتابعة",
+      value: claimedLeads,
+      subtext: "تم التخصيص لفريق المبيعات",
+      icon: CheckCircleIcon,
+      gradient: "from-indigo-500 to-blue-600",
+      bgColor: "bg-indigo-50",
+      iconColor: "text-indigo-600",
+      change: `${claimedLeads}`,
+      changePositive: true,
+      badge: claimedLeads > 0 ? "نشط" : null,
+      colSpan: 2,
+    },
+    {
+      name: "عملاء بانتظار المتابعة",
+      value: unclaimedLeads,
+      subtext: "يحتاج التخصيص لفريق المبيعات",
+      icon: UserPlusIcon,
+      gradient: "from-amber-500 to-orange-600",
+      bgColor: "bg-amber-50",
+      iconColor: "text-amber-600",
+      change: unclaimedLeads > 5 ? "عاجل" : "متاح",
+      changePositive: unclaimedLeads <= 5,
+      badge: unclaimedLeads > 0 ? "متاح" : null,
+      colSpan: 2,
+    },
   ];
 
   return (
@@ -70,7 +102,9 @@ export default function DashboardStats({
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className="group relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          className={clsx(`group relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1`, {
+            "sm:col-span-2": stat.colSpan === 2,
+          })}
         >
           {/* Gradient background on hover */}
           <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
