@@ -2,11 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon, CheckIcon } from "@heroicons/react/24/outline";
+import { cn } from "@/lib/utils";
 
 interface PageSizeSelectProps {
     pageSize: number;
     onChange: (newPageSize: number) => void;
     disabled?: boolean;
+    className?: string;
 }
 
 const sizeOptions = [10, 20, 50, 100];
@@ -15,6 +17,7 @@ export default function PageSizeSelect({
     pageSize,
     onChange,
     disabled = false,
+    className,
 }: PageSizeSelectProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -38,42 +41,38 @@ export default function PageSizeSelect({
     };
 
     return (
-        <div className="relative" ref={dropdownRef}>
+        <div className={cn("relative", className)} ref={dropdownRef}>
             <button
                 type="button"
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 disabled={disabled}
-                className="relative flex items-center gap-2 cursor-pointer rounded-lg bg-white border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all min-w-[120px] justify-between"
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-[12px] font-bold text-gray-600 hover:bg-white hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed group"
             >
-                <span className="block truncate">{pageSize} / صفحة</span>
+                <span className="whitespace-nowrap">{pageSize} / صفحة</span>
                 <ChevronDownIcon
-                    className={`h-4 w-4 text-gray-500 transition-transform ${isOpen ? "transform rotate-180" : ""
-                        }`}
+                    className={cn(
+                        "h-3.5 w-3.5 text-gray-400 group-hover:text-blue-500 transition-transform duration-200",
+                        isOpen ? "transform rotate-180" : ""
+                    )}
                     aria-hidden="true"
                 />
             </button>
 
             {isOpen && (
-                <ul className="absolute bottom-full mb-1 z-50 w-full overflow-hidden rounded-lg bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ul className="absolute top-full mt-1 left-0 z-[100] min-w-[80px] overflow-hidden rounded-xl bg-white py-1 text-xs shadow-xl ring-1 ring-black/5 focus:outline-none animate-in fade-in zoom-in-95 duration-150">
                     {sizeOptions.map((size) => (
                         <li
                             key={size}
-                            className={`relative cursor-default select-none py-2 pl-3 pr-9 hover:bg-gray-50 transition-colors ${size === pageSize ? "bg-blue-50 text-blue-900" : "text-gray-900"
-                                }`}
+                            className={cn(
+                                "relative cursor-pointer select-none py-2 px-3 hover:bg-blue-50 transition-colors flex items-center justify-between gap-3",
+                                size === pageSize ? "bg-blue-50/50 text-blue-700 font-bold" : "text-gray-600"
+                            )}
                             onClick={() => handleSelect(size)}
                         >
-                            <span
-                                className={`block truncate ${size === pageSize ? "font-semibold" : "font-normal"
-                                    }`}
-                            >
-                                {size} / صفحة
-                            </span>
-
-                            {size === pageSize ? (
-                                <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-blue-600">
-                                    <CheckIcon className="h-4 w-4" aria-hidden="true" />
-                                </span>
-                            ) : null}
+                            <span>{size}</span>
+                            {size === pageSize && (
+                                <CheckIcon className="h-3.5 w-3.5 text-blue-600" aria-hidden="true" />
+                            )}
                         </li>
                     ))}
                 </ul>

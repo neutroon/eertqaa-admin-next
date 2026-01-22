@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon, CheckIcon } from "@heroicons/react/24/outline";
 import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import { cn } from "@/lib/utils";
 
 interface StatusSelectProps {
     status: string;
@@ -74,41 +75,41 @@ export default function StatusSelect({
             </button>
 
             {isOpen && (
-                <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-lg bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                <ul className="absolute z-50 mt-2 max-h-60 w-full overflow-hidden rounded-xl bg-white p-1.5 text-base shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm animate-in fade-in slide-in-from-top-2 duration-200">
                     {statusOptions.map((option) => (
                         <li
-                            key={option.value}
-                            className={`relative cursor-pointer select-none py-2 pl-3 pr-9 hover:bg-gray-50 transition-colors ${option.value === status ? "bg-blue-50" : ""
-                                }`}
+                            key={`status-${option.value}`}
+                            className={cn(
+                                "group relative cursor-pointer select-none py-2.5 px-3 rounded-lg transition-all mb-1 last:mb-0 flex items-center justify-between",
+                                option.value === status
+                                    ? `${option.color} font-bold ring-2 ring-white shadow-sm scale-[1.02] z-10`
+                                    : cn(
+                                        "text-gray-700 hover:text-gray-900 border border-transparent",
+                                        option.value === "pending" ? "hover:bg-yellow-100/80 hover:border-yellow-200" :
+                                            option.value === "contacted" ? "hover:bg-blue-100/80 hover:border-blue-200" :
+                                                option.value === "converted" ? "hover:bg-green-100/80 hover:border-green-200" : "hover:bg-red-100/80 hover:border-red-200"
+                                    )
+                            )}
                             onClick={() => handleStatusChange(option.value)}
                         >
-                            <div className="flex items-center">
+                            <div className="flex items-center gap-3">
                                 <span
-                                    className={`inline-block h-2 w-2 flex-shrink-0 rounded-full ${option.value === "pending"
-                                        ? "bg-yellow-400"
-                                        : option.value === "contacted"
-                                            ? "bg-blue-400"
-                                            : option.value === "converted"
-                                                ? "bg-green-400"
-                                                : "bg-red-400"
-                                        }`}
+                                    className={cn(
+                                        "h-2.5 w-2.5 flex-shrink-0 rounded-full shadow-inner",
+                                        option.value === "pending" ? "bg-yellow-400" :
+                                            option.value === "contacted" ? "bg-blue-400" :
+                                                option.value === "converted" ? "bg-green-400" : "bg-red-400"
+                                    )}
                                     aria-hidden="true"
                                 />
-                                <span
-                                    className={`mr-3 block truncate ${option.value === status
-                                        ? "font-semibold text-blue-900"
-                                        : "font-normal text-gray-900"
-                                        }`}
-                                >
+                                <span className="block truncate">
                                     {option.label}
                                 </span>
                             </div>
 
-                            {option.value === status ? (
-                                <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-blue-600">
-                                    <CheckIcon className="h-4 w-4" aria-hidden="true" />
-                                </span>
-                            ) : null}
+                            {option.value === status && (
+                                <CheckIcon className="h-4 w-4 shrink-0 transition-all scale-110" aria-hidden="true" />
+                            )}
                         </li>
                     ))}
                 </ul>
