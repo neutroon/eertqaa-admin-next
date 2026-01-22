@@ -5,7 +5,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "sonner";
 import { ProgressProvider } from '@bprogress/next/app';
-
+import QueryProvider from "@/components/providers/QueryProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,13 +34,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider>
-          <ProgressProvider
-            height="4px"
-            options={{ showSpinner: false }}
-            shallowRouting
-          >
-            {children}
-          </ProgressProvider>
+          <QueryProvider>
+            <ProgressProvider
+              height="4px"
+              options={{ showSpinner: false }}
+              shallowRouting
+            >
+              {children}
+            </ProgressProvider>
+          </QueryProvider>
           <Toaster />
         </AuthProvider>
       </body>
