@@ -9,7 +9,7 @@ import QuickActions from "@/components/dashboard/QuickActions";
 import { leadsService } from "@/services/leads";
 import { coursesService } from "@/services/courses";
 import { Lead, LeadsStatsResponse, SelectedCourse } from "@/config/api";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
+// import LoadingSpinner from "@/components/ui/LoadingSpinner";
 
 export default function DashboardPage() {
   const [leadsData, setLeadsData] = useState<{ total: number; leads: Lead[] }>({
@@ -20,14 +20,24 @@ export default function DashboardPage() {
     total: 0,
     selectedPrograms: [],
   });
-  const [loading, setLoading] = useState(true);
+  const [loadingStats, setLoadingStats] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [leadsStats, setLeadsStats] = useState<LeadsStatsResponse>({ claimedLeads: 0, unclaimedLeads: 0, totalLeads: 0, newLeadsThisMonth: 0, pendingLeads: 0, contactedLeads: 0, convertedLeads: 0, rejectedLeads: 0, success: false });
+  const [leadsStats, setLeadsStats] = useState<LeadsStatsResponse>({
+    claimedLeads: 0,
+    unclaimedLeads: 0,
+    totalLeads: 0,
+    newLeadsThisMonth: 0,
+    pendingLeads: 0,
+    contactedLeads: 0,
+    convertedLeads: 0,
+    rejectedLeads: 0,
+    success: false,
+  });
 
   useEffect(() => {
     async function fetchData() {
       try {
-        setLoading(true);
+        setLoadingStats(true);
         const [leadsData, coursesData, leadsStatsData] = await Promise.all([
           leadsService.getAllLeads(),
           coursesService.getSelectedCourses(),
@@ -40,7 +50,7 @@ export default function DashboardPage() {
         console.error("Failed to fetch dashboard data:", err);
         setError(err.message || "فشل في تحميل البيانات");
       } finally {
-        setLoading(false);
+        setLoadingStats(false);
       }
     }
     fetchData();
@@ -48,17 +58,20 @@ export default function DashboardPage() {
 
   const recentLeads = useMemo(() => {
     return [...leadsData.leads]
-      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      )
       .slice(0, 5);
   }, [leadsData]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <LoadingSpinner size="lg" />
-      </div>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <div className="flex items-center justify-center min-h-[400px]">
+  //       <LoadingSpinner size="lg" />
+  //     </div>
+  //   );
+  // }
 
   if (error) {
     return (
@@ -84,9 +97,13 @@ export default function DashboardPage() {
         pendingLeads={leadsStats.pendingLeads}
         claimedLeads={leadsStats.claimedLeads}
         unclaimedLeads={leadsStats.unclaimedLeads}
+        loadingStats={loadingStats}
       />
       {/* Popular Programs - Full Width */}
-      <PopularCourses total={selectedCourses.total} selectedPrograms={selectedCourses.selectedPrograms} />
+      <PopularCourses
+        total={selectedCourses.total}
+        selectedPrograms={selectedCourses.selectedPrograms}
+      />
 
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -100,7 +117,6 @@ export default function DashboardPage() {
           <QuickActions />
         </div>
       </div>
-
     </div>
   );
 }
