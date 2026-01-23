@@ -78,7 +78,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
     const handleNewFeedback = (data: any) => {
       toast.info("ملاحظة جديدة", {
-        description: "تمت إضافة ملاحظة على العميل",
+        description: data?.name || "تمت إضافة ملاحظة على العميل",
       });
       handleLeadsUpdate(data);
     };
