@@ -29,22 +29,21 @@ export default function DashboardHeader() {
 
   return (
     <motion.header
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
+      initial={{ x: -10, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: -10, opacity: 0 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
-        ? "bg-white/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50"
-        : "bg-white/95 backdrop-blur-md shadow-md"
-        }`}
+      className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-white/80 backdrop-blur-xl shadow-lg border-b border-gray-200/50"
+          : "bg-white/95 backdrop-blur-md shadow-md"
+      }`}
     >
       <div className="max-w-[98%] mx-auto px-4 lg:px-6">
         <div className="flex items-center justify-between h-16">
           {/* Left Section */}
           <div className="flex items-center gap-4">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <SidebarTrigger className="h-10 w-10 text-gray-600 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl transition-all" />
             </motion.div>
 
@@ -52,19 +51,39 @@ export default function DashboardHeader() {
               <motion.div
                 layoutId="dashboard-branding"
                 className="flex items-center gap-3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -10 }}
                 transition={{ duration: 0.3, ease: "easeInOut" }}
               >
                 <motion.div
                   layoutId="branding-icon"
                   className="h-10 w-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-600 flex items-center justify-center shadow-lg"
                 >
-                  <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
+                  <svg
+                    className="h-6 w-6 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 14l9-5-9-5-9 5 9 5z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"
+                    />
                   </svg>
                 </motion.div>
                 <motion.div layoutId="branding-text">
@@ -147,7 +166,9 @@ export default function DashboardHeader() {
                       <p className="text-sm font-bold text-gray-900">
                         {user?.name}
                       </p>
-                      <p className="text-xs text-gray-600 mt-0.5">{user?.phone}</p>
+                      <p className="text-xs text-gray-600 mt-0.5">
+                        {user?.phone}
+                      </p>
                     </div>
                     <motion.button
                       whileHover={{ backgroundColor: "rgba(239, 68, 68, 0.1)" }}
