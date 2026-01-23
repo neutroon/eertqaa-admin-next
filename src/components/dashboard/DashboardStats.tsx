@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import { CheckCircleIcon, UserCheckIcon, UserPlusIcon } from "lucide-react";
+import LoadingSpinner from "../ui/LoadingSpinner";
 
 interface DashboardStatsProps {
   totalCourses: number;
@@ -16,6 +17,7 @@ interface DashboardStatsProps {
   pendingLeads: number;
   claimedLeads: number;
   unclaimedLeads: number;
+  loadingStats: boolean;
 }
 
 export default function DashboardStats({
@@ -25,6 +27,7 @@ export default function DashboardStats({
   pendingLeads,
   claimedLeads,
   unclaimedLeads,
+  loadingStats,
 }: DashboardStatsProps) {
   const stats = [
     {
@@ -102,24 +105,32 @@ export default function DashboardStats({
       {stats.map((stat) => (
         <div
           key={stat.name}
-          className={clsx(`group relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1`, {
-            "sm:col-span-2": stat.colSpan === 2,
-          })}
+          className={clsx(
+            `group relative overflow-hidden rounded-xl bg-white border border-gray-100 p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1`,
+            {
+              "sm:col-span-2": stat.colSpan === 2,
+            }
+          )}
         >
           {/* Gradient background on hover */}
-          <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
+          ></div>
 
           <div className="relative z-10">
             <div className="flex items-start justify-between mb-4">
-              <div className={`p-3 rounded-xl ${stat.bgColor} group-hover:scale-110 transition-transform duration-300`}>
+              <div
+                className={`p-3 rounded-xl ${stat.bgColor} group-hover:scale-110 transition-transform duration-300`}
+              >
                 <stat.icon className={`w-6 h-6 ${stat.iconColor}`} />
               </div>
               {stat.change && (
                 <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-full ${stat.changePositive
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                    }`}
+                  className={`text-xs font-semibold px-2 py-1 rounded-full ${
+                    stat.changePositive
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
                 >
                   {stat.change}
                 </span>
@@ -131,7 +142,11 @@ export default function DashboardStats({
                 {stat.name}
               </p>
               <p className="text-3xl font-bold text-gray-900 mb-1">
-                {stat.value.toLocaleString("ar-EG")}
+                {loadingStats ? (
+                  <LoadingSpinner size="sm" />
+                ) : (
+                  stat.value.toLocaleString("ar-EG")
+                )}
               </p>
               {stat.subtext && (
                 <p className="text-xs text-gray-500">{stat.subtext}</p>
