@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { Toaster } from "sonner";
-import { ProgressProvider } from '@bprogress/next/app';
+import { ProgressProvider } from "@bprogress/next/app";
 import QueryProvider from "@/components/providers/QueryProvider";
 
 const geistSans = Geist({
@@ -43,9 +43,14 @@ export default function RootLayout({
               {children}
             </ProgressProvider>
           </QueryProvider>
-          <Toaster />
+          <Toaster
+            position="top-right"
+            richColors
+            duration={7000}
+            closeButton
+          />
         </AuthProvider>
       </body>
-    </html >
+    </html>
   );
 }
