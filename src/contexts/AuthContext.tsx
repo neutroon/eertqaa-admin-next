@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { authService } from "@/services/auth";
 import { ApiError } from "@/config/api";
+import { toast } from "sonner";
 
 export enum UserRole {
   ADMIN = "ADMIN",
@@ -113,17 +114,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     password: string
   ): Promise<{ success: boolean; error?: string }> => {
     try {
-      console.log("🔐 AuthContext: Starting login process");
+      // console.log("🔐 AuthContext: Starting login process");
       const response = await authService.login({ phone, password });
-      console.log("🔐 AuthContext: Login response received:", response);
+      // console.log("🔐 AuthContext: Login response received:", response);
 
       setUser(response);
       setIsAuthenticated(true);
 
-      console.log("🔐 AuthContext: Login successful, returning success");
+      // console.log("🔐 AuthContext: Login successful, returning success");
       return { success: true };
     } catch (error: any) {
-      console.error("🔐 AuthContext: Login error:", error);
+      // console.error("🔐 AuthContext: Login error:", error);
 
       let errorMessage = "حدث خطأ أثناء تسجيل الدخول";
 
@@ -159,7 +160,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       await authService.logout();
     } catch (error) {
-      console.error("Logout error:", error);
+      // console.error("Logout error:", error);
+      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
     } finally {
       setUser(null);
       setIsAuthenticated(false);

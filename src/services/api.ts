@@ -7,7 +7,7 @@ class ApiService {
   constructor() {
     this.baseURL = API_CONFIG.BASE_URL;
     this.timeout = API_CONFIG.TIMEOUT;
-    console.log("🔍 ApiService constructor", this.baseURL);
+    // console.log("🔍 ApiService constructor", this.baseURL);
   }
 
   // Generic request method
@@ -48,7 +48,7 @@ class ApiService {
       try {
         data = await response.json();
       } catch (error) {
-        console.log("Invalid JSON response from server", this.baseURL);
+        // console.log("Invalid JSON response from server", this.baseURL);
         throw new ApiError(
           response.status,
           "Invalid JSON response from server"

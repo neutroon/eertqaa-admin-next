@@ -10,6 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { PhoneIcon } from "lucide-react";
+import { toast } from "sonner";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -38,20 +39,16 @@ export default function LoginPage() {
     setError("");
 
     try {
-      console.log("🔐 Calling login with:", {
-        phone: formData.phone,
-        password: formData.password,
-      });
       const result = await login(formData.phone, formData.password);
-      console.log("🔐 Login result:", result);
 
       if (!result.success) {
         setError(result.error || "فشل في تسجيل الدخول");
       }
       // If successful, the AuthContext will handle the redirect
     } catch (error) {
-      console.error("🔐 Login error caught:", error);
-      setError("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
+      setError(
+        (error as any)?.message || "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى."
+      );
     } finally {
       setIsLoading(false);
     }

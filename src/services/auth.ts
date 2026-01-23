@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { apiService } from "./api";
 import {
   API_CONFIG,
@@ -10,31 +11,24 @@ export class AuthService {
   // Login method
   async login(credentials: LoginRequest): Promise<LoginResponse> {
     try {
-      console.log("🔐 Attempting login with credentials:", {
-        phone: credentials.phone,
-        password: "***",
-      });
-
       const response = await apiService.post<LoginResponse>(
         API_CONFIG.ENDPOINTS.AUTH.LOGIN,
         credentials
       );
-
-      console.log("🔐 Login response:", response);
 
       if (response.success) {
         // Store user data (cookies are handled automatically by the browser)
         localStorage.setItem("adminUser", JSON.stringify(response?.data));
         localStorage.setItem("isAuthenticated", "true");
 
-        console.log("✅ Login successful, user data stored");
         return response?.data as LoginResponse;
       } else {
-        console.error("❌ Login failed:", response.message);
+        // console.error("❌ Login failed:", response.message);
         throw new Error(response.message || "Login failed");
       }
     } catch (error: any) {
-      console.error("❌ Login error:", error);
+      // console.error("❌ Login error:", error);
+      toast.error(error.message || "حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       throw error;
     }
   }
@@ -48,11 +42,13 @@ export class AuthService {
           await apiService.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT);
         } catch (error) {
           // If logout endpoint fails, still clear local storage
-          console.warn("Logout endpoint failed:", error);
+          // console.warn("Logout endpoint failed:", error);
+          toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
         }
       }
     } catch (error) {
-      console.error("Logout error:", error);
+      // console.error("Logout error:", error);
+      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
     } finally {
       // Always clear local storage (cookies are cleared by server or browser)
       this.clearAuthData();
@@ -72,7 +68,8 @@ export class AuthService {
         throw new Error(response.message || "Failed to fetch profile");
       }
     } catch (error: any) {
-      console.error("Get profile error:", error);
+      // console.error("Get profile error:", error);
+      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       throw error;
     }
   }
@@ -100,7 +97,8 @@ export class AuthService {
         throw new Error(response.message || "Token refresh failed");
       }
     } catch (error: any) {
-      console.error("Token refresh error:", error);
+      // console.error("Token refresh error:", error);
+      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       this.clearAuthData();
       throw error;
     }
@@ -125,7 +123,8 @@ export class AuthService {
       }
       return false;
     } catch (error) {
-      console.warn("Authentication verification failed:", error);
+      // console.warn("Authentication verification failed:", error);
+      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       // Clear invalid auth state
       this.clearAuthData();
       return false;
@@ -138,7 +137,8 @@ export class AuthService {
       const userData = localStorage.getItem("adminUser");
       return userData ? JSON.parse(userData) : null;
     } catch (error) {
-      console.error("Error parsing user data:", error);
+      //  console.error("Error parsing user data:", error);
+      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       return null;
     }
   }

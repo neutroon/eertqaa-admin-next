@@ -95,7 +95,6 @@ export default function StudentModal({ student, onClose }: StudentModalProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Handle form submission here
-    console.log("Student data:", formData);
     onClose();
   };
 

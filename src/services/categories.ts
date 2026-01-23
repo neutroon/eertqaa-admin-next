@@ -6,7 +6,7 @@ export class CategoriesService {
     const response = await apiService.get<Category[]>(
       API_CONFIG.ENDPOINTS.CATEGORIES.GET_ALL
     );
-    console.log(response);
+    // console.log(response);
     if (response.success) {
       return response.data || [];
     } else {

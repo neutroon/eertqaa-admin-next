@@ -21,6 +21,7 @@ import LeadProfileModal from "./LeadProfileModal";
 import { useSearchParams } from "next/navigation";
 
 interface LeadsManagementProps {
+  isFetching?: boolean;
   leadsData: LeadsResponse;
   onLeadCreated: (lead: Lead) => void;
   onLeadUpdated: (lead: Lead) => void;
@@ -36,8 +37,9 @@ interface LeadsManagementProps {
     sortOrder: "asc" | "desc";
     leadId?: string;
   };
-  onFilterChange: (updates: Record<string, string | number | undefined>) => void;
-  isFetching?: boolean;
+  onFilterChange: (
+    updates: Record<string, string | number | undefined>
+  ) => void;
   stats?: LeadsStatsResponse;
   pageSize: number;
   onPageSizeChange: (size: number) => void;
@@ -47,6 +49,7 @@ interface LeadsManagementProps {
 }
 
 export default function LeadsManagement({
+  isFetching = false,
   leadsData,
   onLeadCreated,
   onLeadUpdated,
@@ -54,7 +57,6 @@ export default function LeadsManagement({
   onRefresh,
   filters,
   onFilterChange,
-  isFetching = false,
   stats,
   pageSize,
   onPageSizeChange,
@@ -207,7 +209,9 @@ export default function LeadsManagement({
             <div className="flex items-center bg-gray-100 rounded-lg p-1 border border-gray-200 shadow-sm">
               <button
                 onClick={() =>
-                  onFilterChange({ sortOrder: filters.sortOrder === "desc" ? "asc" : "desc" })
+                  onFilterChange({
+                    sortOrder: filters.sortOrder === "desc" ? "asc" : "desc",
+                  })
                 }
                 className="p-1.5 rounded-md text-gray-500 hover:text-gray-700 transition-colors"
                 title={
@@ -225,20 +229,22 @@ export default function LeadsManagement({
             <div className="flex items-center bg-gray-100 rounded-lg p-1 space-x-2 border border-gray-200 shadow-sm">
               <button
                 onClick={() => setViewMode("table")}
-                className={`p-1.5 rounded-md transition-all ${viewMode === "table"
-                  ? "bg-white shadow-sm text-blue-600"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`p-1.5 rounded-md transition-all ${
+                  viewMode === "table"
+                    ? "bg-white shadow-sm text-blue-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
                 title="عرض كجدول"
               >
                 <TableCellsIcon className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-1.5 rounded-md transition-all ${viewMode === "grid"
-                  ? "bg-white shadow-sm text-blue-600"
-                  : "text-gray-500 hover:text-gray-700"
-                  }`}
+                className={`p-1.5 rounded-md transition-all ${
+                  viewMode === "grid"
+                    ? "bg-white shadow-sm text-blue-600"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
                 title="عرض كبطاقات"
               >
                 <Squares2X2Icon className="w-5 h-5" />
@@ -275,8 +281,12 @@ export default function LeadsManagement({
                 <div className="absolute inset-0 blur-lg opacity-20 bg-blue-400 rounded-full animate-pulse"></div>
               </div>
               <div className="flex flex-col items-center">
-                <span className="text-base font-bold text-gray-900 tracking-tight">تحديث البيانات</span>
-                <span className="text-sm text-gray-500 mt-1">يرجى الانتظار قليلاً...</span>
+                <span className="text-base font-bold text-gray-900 tracking-tight">
+                  تحديث البيانات
+                </span>
+                <span className="text-sm text-gray-500 mt-1">
+                  يرجى الانتظار قليلاً...
+                </span>
               </div>
             </div>
           </div>
@@ -285,9 +295,7 @@ export default function LeadsManagement({
           <h3 className="text-lg font-medium text-gray-900">
             العملاء المحتملين
           </h3>
-          {leadsData.leads.length > 0 && (
-            children
-          )}
+          {leadsData.leads.length > 0 && children}
         </div>
 
         {leadsData.leads.length === 0 ? (
@@ -331,8 +339,9 @@ export default function LeadsManagement({
 
             {/* Grid/Mobile View */}
             <div
-              className={`${viewMode === "table" ? "md:hidden" : ""
-                } divide-y divide-gray-200 md:divide-y-0 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-4 md:p-4`}
+              className={`${
+                viewMode === "table" ? "md:hidden" : ""
+              } divide-y divide-gray-200 md:divide-y-0 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-4 md:p-4`}
             >
               {leadsData.leads.map((lead, index) => (
                 <div

@@ -69,7 +69,6 @@ export default function LeadsTable({
     ];
     // get user id from auth context
     const { user } = useAuth();
-    console.log(user?.role);
     const { leadProfile } = useLeads();
     const searchParams = useSearchParams();
     const pathname = usePathname();
@@ -99,8 +98,6 @@ export default function LeadsTable({
     };
     const openLeadProfile = (leadId: string) => {
         updateFilters({ leadId: leadId });
-        console.log("Opening lead profile:", leadProfile);
-
     };
     return (
         <div className="overflow-x-auto rounded-xl border border-gray-200 bg-white">

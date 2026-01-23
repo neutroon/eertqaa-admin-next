@@ -17,10 +17,10 @@ export const useSocket = (isAuthenticated: boolean) => {
     }
 
     const socketUrl = API_CONFIG.BASE_URL;
-    console.log(
-      "🔌 Attempting to connect to socket (cookie-based):",
-      socketUrl,
-    );
+    // console.log(
+    //   "🔌 Attempting to connect to socket (cookie-based):",
+    //   socketUrl
+    // );
 
     const s = io(socketUrl, {
       transports: ["polling", "websocket"],
@@ -31,24 +31,24 @@ export const useSocket = (isAuthenticated: boolean) => {
     });
 
     s.on("connect", () => {
-      console.log("✅ Socket connected:", s.id);
+      // console.log("✅ Socket connected:", s.id);
       setIsConnected(true);
     });
 
     s.on("disconnect", (reason) => {
-      console.log("❌ Socket disconnected:", reason);
+      // console.log("❌ Socket disconnected:", reason);
       setIsConnected(false);
     });
 
     s.on("connect_error", (err) => {
-      console.error("⚠️ Socket connection error:", err.message);
+      // console.error("⚠️ Socket connection error:", err.message);
       setIsConnected(false);
     });
 
     setSocket(s);
 
     return () => {
-      console.log("🔌 Cleaning up socket connection...");
+      // console.log("🔌 Cleaning up socket connection...");
       s.disconnect();
       setSocket(null);
       setIsConnected(false);

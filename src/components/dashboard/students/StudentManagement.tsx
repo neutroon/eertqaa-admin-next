@@ -207,7 +207,6 @@ export default function StudentManagement() {
 
   const handleStatusChange = (studentId: string, newStatus: string) => {
     // Handle status change logic here
-    console.log("Change status:", studentId, newStatus);
   };
 
   const handleExport = () => {
