@@ -7,7 +7,7 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AnimatePresence } from "framer-motion";
 import { SocketProvider } from "@/components/providers/SocketProvider";
 import { useAuth } from "@/contexts/AuthContext";
-import { OnlineUser } from "@/types/user";
+// import { OnlineUser } from "@/types/user";
 
 export default function DashboardLayout({
   children,
@@ -18,7 +18,7 @@ export default function DashboardLayout({
   return (
     <ProtectedRoute>
       <SocketProvider>
-        <OnlineUsersWidget user={user as OnlineUser} />
+        <OnlineUsersWidget user={user as any} />
         <SidebarProvider defaultOpen={false}>
           <AnimatePresence mode="wait">
             <AppSidebar />
