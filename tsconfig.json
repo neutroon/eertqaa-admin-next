@@ -36,7 +36,7 @@
     "src/types/heroicons.d.ts.draft",
     "src/components/dashboard/DashboardSidebar.tsx.draft",
     ".next/dev/types/**/*.ts"
-  ],
+, "src/components/studentsPage/page.tsx.backup"  ],
   "exclude": [
     "node_modules"
   ]
