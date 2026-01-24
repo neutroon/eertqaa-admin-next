@@ -7,7 +7,7 @@ import {
   UpdateCourseRequest,
   CoursesResponse,
   ApiResponse,
-  SelectedCoursesResponse,
+  // SelectedCoursesResponse,
 } from "@/config/api";
 
 export class CoursesService {
@@ -15,7 +15,7 @@ export class CoursesService {
   async getAllCourses(): Promise<CoursesResponse> {
     try {
       const response = await apiService.get<CoursesResponse>(
-        API_CONFIG.ENDPOINTS.COURSES.GET_ALL
+        API_CONFIG.ENDPOINTS.COURSES.GET_ALL,
       );
 
       if (response.success && response.data) {
@@ -29,10 +29,10 @@ export class CoursesService {
     }
   }
 
-  async getSelectedCourses(): Promise<SelectedCoursesResponse> {
+  async getSelectedCourses(): Promise<any> {
     try {
-      const response = await apiService.get<SelectedCoursesResponse>(
-        API_CONFIG.ENDPOINTS.COURSES.GET_SELECTED
+      const response = await apiService.get<any>(
+        API_CONFIG.ENDPOINTS.COURSES.GET_SELECTED,
       );
 
       if (response.success && response.data) {
@@ -51,7 +51,7 @@ export class CoursesService {
     try {
       const response = await apiService.post<Course>(
         API_CONFIG.ENDPOINTS.COURSES.CREATE,
-        courseData
+        courseData,
       );
 
       if (response.success && response.data) {
@@ -68,12 +68,12 @@ export class CoursesService {
   // Update an existing lead
   async updateCourse(
     courseId: string,
-    courseData: UpdateCourseRequest
+    courseData: UpdateCourseRequest,
   ): Promise<Course> {
     try {
       const response = await apiService.put<Course>(
         `${API_CONFIG.ENDPOINTS.COURSES.UPDATE}/${courseId}`,
-        courseData
+        courseData,
       );
 
       if (response.success && response.data) {
@@ -91,7 +91,7 @@ export class CoursesService {
   async deleteCourse(courseId: string): Promise<void> {
     try {
       const response = await apiService.delete(
-        `${API_CONFIG.ENDPOINTS.COURSES.DELETE}/${courseId}`
+        `${API_CONFIG.ENDPOINTS.COURSES.DELETE}/${courseId}`,
       );
 
       if (!response.success) {
