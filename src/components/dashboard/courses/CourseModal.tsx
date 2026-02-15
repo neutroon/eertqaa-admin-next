@@ -227,7 +227,7 @@ export default function CourseModal({
               >
                 <option value="">اختر الفئة</option>
                 {categories.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
+                  <option key={`cat-${cat.id}`} value={cat.id}>
                     {cat.name}
                   </option>
                 ))}
@@ -370,7 +370,7 @@ export default function CourseModal({
                 <div className="flex flex-wrap gap-2">
                   {formData.features.map((feature: string, index: number) => (
                     <span
-                      key={index}
+                      key={`${feature}-${index}`}
                       className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
                     >
                       {feature}

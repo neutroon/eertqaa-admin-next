@@ -128,7 +128,7 @@ export default function CategoryModal({
           <div className="space-y-2">
             {categories.map((category) => (
               <div
-                key={category.id}
+                key={`category-${category.id}`}
                 className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
               >
                 <div className="flex items-center">

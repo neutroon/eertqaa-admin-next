@@ -136,7 +136,7 @@ export default function CourseManagement({
             >
               <option value="all">جميع الفئات</option>
               {categories.map((category) => (
-                <option key={category.id} value={category.name}>
+                <option key={`categ-${category.id}`} value={category.name}>
                   {category.name}
                 </option>
               ))}
@@ -238,21 +238,18 @@ export default function CourseManagement({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        course.availableSeats == 0 && "bg-red-100 text-red-800"
-                      }${
-                        course.availableSeats > 0 &&
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${course.availableSeats == 0 && "bg-red-100 text-red-800"
+                        }${course.availableSeats > 0 &&
                         "bg-purple-100 text-green-800"
-                      }${
-                        course.status === "inactive" &&
+                        }${course.status === "inactive" &&
                         "bg-purple-100 text-purple-800"
-                      }`}
+                        }`}
                     >
                       {course.availableSeats === 0
                         ? "مكتمل"
                         : course.availableSeats > 0
-                        ? "متاح"
-                        : "غير متاح"}
+                          ? "متاح"
+                          : "غير متاح"}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">

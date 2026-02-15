@@ -371,7 +371,7 @@ export default function LeadProfileModal({
                                                 </div>
                                             ) : (
                                                 lead?.feedbacks?.map((f, i) => (
-                                                    <div key={f.id} className="relative">
+                                                    <div key={f.id || i} className="relative">
                                                         <div className="absolute top-0 -end-12 w-8 h-8 rounded-full bg-blue-50 border-2 border-white shadow-sm flex items-center justify-center">
                                                             <span className="text-[10px] font-bold text-blue-600">#{lead.feedbacks.length - i}</span>
                                                         </div>
