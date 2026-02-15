@@ -20,6 +20,7 @@ export default function MyLeadsPage() {
     const search = searchParams.get("search") || "";
     const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
     const leadId = searchParams.get("leadId") || undefined;
+    const source = searchParams.get("source") as "website" | "Cairo University" | "Ain Shams University";
 
     const leadsResult = useLeads({
         page,
@@ -30,6 +31,7 @@ export default function MyLeadsPage() {
         "orderBy.createdAt": sortOrder,
         id: leadId,
         assignedToSalesId: user?.id,
+        source,
     });
 
     const {
@@ -57,7 +59,7 @@ export default function MyLeadsPage() {
                 params.set(key, value.toString());
             }
         });
-        if (!updates.page) {
+        if (!updates.page && !("leadId" in updates)) {
             params.set("page", "1");
         }
         router.push(`${pathname}?${params.toString()}`);
@@ -134,7 +136,7 @@ export default function MyLeadsPage() {
                     onLeadUpdated={() => refetch()}
                     onLeadDeleted={() => refetch()}
                     onRefresh={handleRefresh}
-                    filters={{ page, limit, status, isLocked, search, sortOrder, leadId }}
+                    filters={{ page, limit, status, isLocked, search, sortOrder, leadId, source }}
                     onFilterChange={updateFilters}
                     stats={statsData}
                     pageSize={limit}
