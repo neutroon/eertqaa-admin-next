@@ -24,7 +24,7 @@ export default function PopularCourses(selectedPrograms: SelectedCourse) {
           <p className="text-sm text-gray-400 mt-1">سيظهر هنا البرامج الأكثر شعبية</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 p-6">
+        <div className="grico id grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 p-6">
           {selectedPrograms.selectedPrograms.map((course, index) => (
             <div
               key={course.id}
