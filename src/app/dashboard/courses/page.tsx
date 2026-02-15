@@ -50,13 +50,13 @@ export default function CoursesPage() {
   const handleCourseUpdated = (updatedCourse: Course) => {
     setCourses((prev) =>
       prev.map((course) =>
-        course.id === updatedCourse.id ? updatedCourse : course
+        course?.id === updatedCourse?.id ? updatedCourse : course
       )
     );
   };
 
   const handleCourseDeleted = (courseId: string) => {
-    setCourses((prev) => prev.filter((course) => course.id !== courseId));
+    setCourses((prev) => prev.filter((course) => course?.id !== courseId));
   };
 
   if (isLoading) {
