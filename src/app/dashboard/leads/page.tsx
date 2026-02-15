@@ -24,6 +24,7 @@ export default function LeadsPage() {
   const search = searchParams.get("search") || "";
   const sortOrder = (searchParams.get("sortOrder") as "asc" | "desc") || "desc";
   const leadId = searchParams.get("leadId") || undefined;
+  const source = searchParams.get("source") as "website" | "Cairo University" | "Ain Shams University";
 
   const leadsResult = useLeads({
     page,
@@ -33,6 +34,7 @@ export default function LeadsPage() {
     search,
     "orderBy.createdAt": sortOrder,
     id: leadId,
+    source,
   });
 
   const {
@@ -61,7 +63,7 @@ export default function LeadsPage() {
       }
     });
     // Reset to page 1 if any filter other than page changes
-    if (!updates.page) {
+    if (!updates.page && !("leadId" in updates)) {
       params.set("page", "1");
     }
     router.push(`${pathname}?${params.toString()}`, { scroll: false });
@@ -179,7 +181,7 @@ export default function LeadsPage() {
         onLeadUpdated={() => refetch()}
         onLeadDeleted={() => refetch()}
         onRefresh={handleRefresh}
-        filters={{ page, limit, status, isLocked, search, sortOrder, leadId }}
+        filters={{ page, limit, status, isLocked, search, sortOrder, leadId, source }}
         onFilterChange={updateFilters}
         stats={statsData}
         pageSize={limit}
@@ -227,24 +229,61 @@ export default function LeadsPage() {
         )}
       </LeadsManagement>
 
-      {/* Pagination Summary */}
-      {leadsData.leads.length > 0 && (
-        <div className="bg-white px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200">
-          <p className="text-sm text-gray-500">
-            عرض{" "}
-            <span className="font-medium text-gray-900">
-              {(page - 1) * limit + 1}
-            </span>{" "}
-            إلى{" "}
-            <span className="font-medium text-gray-900">
-              {Math.min(page * limit, leadsData.total)}
-            </span>{" "}
-            من{" "}
-            <span className="font-medium text-gray-900">{leadsData.total}</span>{" "}
-            نتائج
-          </p>
-        </div>
-      )}
+      <div className="flex">
+        {leadsData.leads.length > 0 && (
+          <div className="relative bg-white px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200">
+            <nav
+              className="flex items-center gap-2"
+              aria-label="Pagination"
+              dir="ltr"
+            >
+              <button
+                onClick={() => updateFilters({ page: Math.max(1, page - 1) })}
+                disabled={page === 1}
+                className="inline-flex items-center justify-center w-10 h-10 rounded-xl border text-gray-500 hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm disabled:opacity-40"
+              >
+                <ChevronLeftIcon className="h-5 w-5" />
+              </button>
+
+              <div className="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200">
+                <span className="px-4 text-xs font-bold text-gray-600">
+                  {page} / {leadsData.totalPages}
+                </span>
+              </div>
+
+              <button
+                onClick={() =>
+                  updateFilters({
+                    page: Math.min(leadsData.totalPages, page + 1),
+                  })
+                }
+                disabled={page === leadsData.totalPages}
+                className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-gray-200 text-gray-500 hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm disabled:opacity-40"
+              >
+                <ChevronRightIcon className="h-5 w-5" />
+              </button>
+            </nav>
+          </div>
+        )}
+        {/* Pagination Summary */}
+        {leadsData.leads.length > 0 && (
+          <div className="bg-white px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200">
+            <p className="text-sm text-gray-500">
+              عرض{" "}
+              <span className="font-medium text-gray-900">
+                {(page - 1) * limit + 1}
+              </span>{" "}
+              إلى{" "}
+              <span className="font-medium text-gray-900">
+                {Math.min(page * limit, leadsData.total)}
+              </span>{" "}
+              من{" "}
+              <span className="font-medium text-gray-900">{leadsData.total}</span>{" "}
+              نتائج
+            </p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
