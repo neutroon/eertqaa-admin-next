@@ -21,6 +21,12 @@ export class LeadsService {
     search?: string;
     assignedToSalesId?: string;
     "orderBy.createdAt"?: "asc" | "desc";
+    source?:
+      | "website"
+      | "Cairo University"
+      | "Ain Shams University"
+      | "facebook"
+      | "whatsapp";
   }): Promise<LeadsResponse> {
     try {
       // Map searchTerm to name for the API if needed, or pass directly
@@ -35,10 +41,11 @@ export class LeadsService {
         queryParams.assignedToSalesId = params.assignedToSalesId;
       if (params?.["orderBy.createdAt"])
         queryParams["orderBy.createdAt"] = params["orderBy.createdAt"];
+      if (params?.source) queryParams.source = params.source;
 
       const response = await apiService.get<LeadsResponse>(
         API_CONFIG.ENDPOINTS.LEADS.GET_ALL,
-        queryParams
+        queryParams,
       );
 
       if (response.success && response.data) {
@@ -56,7 +63,7 @@ export class LeadsService {
   async getLeadsStats(): Promise<LeadsStatsResponse> {
     try {
       const response = await apiService.get<LeadsStatsResponse>(
-        API_CONFIG.ENDPOINTS.LEADS.STATS
+        API_CONFIG.ENDPOINTS.LEADS.STATS,
       );
 
       if (response.success && response.data) {
@@ -75,7 +82,7 @@ export class LeadsService {
     try {
       const response = await apiService.post<Lead>(
         API_CONFIG.ENDPOINTS.LEADS.CREATE,
-        leadData
+        leadData,
       );
 
       if (response.success && response.data) {
@@ -94,7 +101,7 @@ export class LeadsService {
     try {
       const response = await apiService.put<Lead>(
         `${API_CONFIG.ENDPOINTS.LEADS.UPDATE}/${leadId}`,
-        leadData
+        leadData,
       );
 
       if (response.success && response.data) {
@@ -111,12 +118,12 @@ export class LeadsService {
   // Update only the status of a lead (more efficient for status changes)
   async updateLeadStatus(
     leadId: string,
-    status: "pending" | "contacted" | "converted" | "rejected"
+    status: "pending" | "contacted" | "converted" | "rejected",
   ): Promise<Lead> {
     try {
       const response = await apiService.put<Lead>(
         `${API_CONFIG.ENDPOINTS.LEADS.UPDATE}/${leadId}`,
-        { status }
+        { status },
       );
 
       if (response.success && response.data) {
@@ -135,7 +142,7 @@ export class LeadsService {
     try {
       const response = await apiService.post<LeadFeedback>(
         `/api/v1/leads/feedback`,
-        feedbackData
+        feedbackData,
       );
 
       if (response.success && response.data) {
@@ -153,7 +160,7 @@ export class LeadsService {
   async deleteLead(leadId: string): Promise<void> {
     try {
       const response = await apiService.delete(
-        `${API_CONFIG.ENDPOINTS.LEADS.DELETE}/${leadId}`
+        `${API_CONFIG.ENDPOINTS.LEADS.DELETE}/${leadId}`,
       );
 
       if (!response.success) {
@@ -169,7 +176,7 @@ export class LeadsService {
     try {
       const response = await apiService.put<Lead>(
         `${API_CONFIG.ENDPOINTS.LEADS.UPDATE}/${leadId}`,
-        { isLocked }
+        { isLocked },
       );
 
       if (response.success && response.data) {
@@ -186,7 +193,7 @@ export class LeadsService {
   async getLeadById(leadId: string): Promise<Lead> {
     try {
       const response = await apiService.get<Lead>(
-        `${API_CONFIG.ENDPOINTS.LEADS.GET_BY_ID}/${leadId}`
+        `${API_CONFIG.ENDPOINTS.LEADS.GET_BY_ID}/${leadId}`,
       );
 
       if (response.success && response.data) {
@@ -204,7 +211,7 @@ export class LeadsService {
     try {
       const response = await apiService.post<Lead>(
         `${API_CONFIG.ENDPOINTS.LEADS.CLAIM}/${leadId}`,
-        {}
+        {},
       );
 
       if (response.success && response.data) {

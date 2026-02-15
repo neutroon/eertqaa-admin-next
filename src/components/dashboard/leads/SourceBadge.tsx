@@ -21,6 +21,23 @@ interface SourceBadgeProps {
 }
 
 const sourceConfig = {
+    "Cairo University": {
+        label: "جامعة القاهرة",
+        icon: GlobeAltIcon,
+        bgColor: "bg-blue-50",
+        textColor: "text-blue-700",
+        borderColor: "border-blue-200",
+        iconColor: "text-blue-500",
+    },
+    "Ain Shams University": {
+        label: "جامعة عين شمس",
+        icon: GlobeAltIcon,
+        bgColor: "bg-blue-50",
+        textColor: "text-blue-700",
+        borderColor: "border-blue-200",
+        iconColor: "text-blue-500",
+    },
+
     website: {
         label: "الموقع",
         icon: GlobeAltIcon,

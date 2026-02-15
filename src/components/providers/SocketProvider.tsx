@@ -88,7 +88,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     socket.on("lead_claimed", handleLeadClaimed);
     socket.on("lead_updated", handleLeadUpdated);
     socket.on("new_feedback", handleNewFeedback);
-    socket.on("online_users_updated", handleOnlineUsersUpdate);
+    socket.on("online_users_updated", handleOnlineUsersUpdate); 
 
     return () => {
       // console.log("🧹 SocketProvider: Cleaning up listeners");

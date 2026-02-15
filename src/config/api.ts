@@ -84,7 +84,11 @@ export interface selectedProgram {
 }
 
 // Lead source type
-export type LeadSource = "website" | "messenger" | "whatsapp";
+export type LeadSource =
+  | "Cairo University"
+  | "Ain Shams University"
+  | "messenger"
+  | "whatsapp";
 
 // Leads Types
 export interface Lead {

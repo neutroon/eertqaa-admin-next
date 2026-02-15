@@ -23,7 +23,9 @@ import {
     Lock,
     Unlock,
     LayoutGrid,
-    RotateCcw
+    RotateCcw,
+    Globe,
+    Building2
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lead, LeadsStatsResponse } from "@/config/api";
@@ -39,6 +41,7 @@ interface ModernLeadsSearchProps {
     allLeads?: Lead[];
     isLoading?: boolean;
     stats?: LeadsStatsResponse;
+    source: "website" | "Cairo University" | "Ain Shams University" | "facebook" | "whatsapp";
 }
 
 export default function ModernLeadsSearch({
@@ -51,6 +54,7 @@ export default function ModernLeadsSearch({
     allLeads = [],
     isLoading = false,
     stats,
+    source,
 }: ModernLeadsSearchProps) {
     const [searchValue, setSearchValue] = useState(search);
     const [isFocused, setIsFocused] = useState(false);
@@ -223,14 +227,44 @@ export default function ModernLeadsSearch({
             activeClassName: "bg-amber-500 text-white shadow-md ring-2 ring-amber-100",
             inactiveClassName: "bg-amber-50 text-amber-700 hover:bg-amber-100/80 border-amber-100"
         },
+        {
+            label: "جامعة القاهرة",
+            value: "source:Cairo University",
+            active: source === "Cairo University",
+            // count: stats?.unclaimedLeads,
+            icon: Building2,
+            activeClassName: "bg-emerald-600 text-white shadow-md ring-2 ring-emerald-100",
+            inactiveClassName: "bg-emerald-50 text-emerald-700 hover:bg-emerald-100/80 border-emerald-100"
+        },
+        {
+            label: "جامعة عين شمس",
+            value: "source:Ain Shams University",
+            active: source === "Ain Shams University",
+            // count: stats?.unclaimedLeads,
+            icon: Building2,
+            activeClassName: "bg-violet-600 text-white shadow-md ring-2 ring-violet-100",
+            inactiveClassName: "bg-violet-50 text-violet-700 hover:bg-violet-100/80 border-violet-100"
+        },
+        {
+            label: "الموقع",
+            value: "source:website",
+            active: source === "website",
+            // count: stats?.unclaimedLeads,
+            icon: Globe,
+            activeClassName: "bg-sky-500 text-white shadow-md ring-2 ring-sky-100",
+            inactiveClassName: "bg-sky-50 text-sky-700 hover:bg-sky-100/80 border-sky-100"
+        },
     ];
 
     const handleQuickFilterClick = (value: string) => {
         if (value.startsWith("isLocked:")) {
             const lockVal = value.split(":")[1];
-            onFilterChange({ isLocked: lockVal, status: undefined, page: 1 });
+            onFilterChange({ isLocked: lockVal, status: undefined, source: undefined, page: 1 });
+        } else if (value.startsWith("source:")) {
+            const sourceVal = value.split(":")[1];
+            onFilterChange({ source: sourceVal, status: undefined, isLocked: undefined, page: 1 });
         } else {
-            onFilterChange({ status: value || undefined, isLocked: undefined, page: 1 });
+            onFilterChange({ status: value || undefined, isLocked: undefined, source: undefined, page: 1 });
         }
     };
 
@@ -257,6 +291,7 @@ export default function ModernLeadsSearch({
         ...(status ? [{ label: `الحالة: ${handleStatusValues(status)}`, key: "status" }] : []),
         ...(isLocked === "true" ? [{ label: "تم الاستلام", key: "isLocked" }] : []),
         ...(isLocked === "false" ? [{ label: "متاح للاستلام", key: "isLocked" }] : []),
+        ...(source ? [{ label: `المصدر: ${source}`, key: "source" }] : []),
     ];
 
     const handleShare = async () => {
@@ -422,7 +457,7 @@ export default function ModernLeadsSearch({
                                 </div>
 
                                 <button
-                                    onClick={() => onFilterChange({ status: undefined, isLocked: undefined, search: "", page: 1 })}
+                                    onClick={() => onFilterChange({ status: undefined, isLocked: undefined, source: undefined, search: "", page: 1 })}
                                     className="w-full py-3 bg-red-50 text-red-600 text-xs font-black rounded-xl hover:bg-red-100 border border-red-100 transition-all flex items-center justify-center gap-2 mt-2"
                                 >
                                     <RotateCcw className="w-4 h-4" />

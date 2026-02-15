@@ -85,7 +85,7 @@ export default function LeadsTable({
             }
         });
         // Reset to page 1 if any filter other than page changes
-        if (!updates.page) {
+        if (!updates.page && !("leadId" in updates)) {
             params.set("page", "1");
         }
         router.push(`${pathname}?${params.toString()}`, { scroll: false });

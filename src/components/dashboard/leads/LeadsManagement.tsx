@@ -36,6 +36,7 @@ interface LeadsManagementProps {
     search: string;
     sortOrder: "asc" | "desc";
     leadId?: string;
+    source: "website" | "Cairo University" | "Ain Shams University" | "facebook" | "whatsapp";
   };
   onFilterChange: (
     updates: Record<string, string | number | undefined>
@@ -200,6 +201,7 @@ export default function LeadsManagement({
         allLeads={leadsData.leads}
         isLoading={isFetching}
         stats={stats}
+        source={filters.source}
       />
 
       <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
@@ -229,22 +231,20 @@ export default function LeadsManagement({
             <div className="flex items-center bg-gray-100 rounded-lg p-1 space-x-2 border border-gray-200 shadow-sm">
               <button
                 onClick={() => setViewMode("table")}
-                className={`p-1.5 rounded-md transition-all ${
-                  viewMode === "table"
-                    ? "bg-white shadow-sm text-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`p-1.5 rounded-md transition-all ${viewMode === "table"
+                  ? "bg-white shadow-sm text-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 title="عرض كجدول"
               >
                 <TableCellsIcon className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-1.5 rounded-md transition-all ${
-                  viewMode === "grid"
-                    ? "bg-white shadow-sm text-blue-600"
-                    : "text-gray-500 hover:text-gray-700"
-                }`}
+                className={`p-1.5 rounded-md transition-all ${viewMode === "grid"
+                  ? "bg-white shadow-sm text-blue-600"
+                  : "text-gray-500 hover:text-gray-700"
+                  }`}
                 title="عرض كبطاقات"
               >
                 <Squares2X2Icon className="w-5 h-5" />
@@ -339,9 +339,8 @@ export default function LeadsManagement({
 
             {/* Grid/Mobile View */}
             <div
-              className={`${
-                viewMode === "table" ? "md:hidden" : ""
-              } divide-y divide-gray-200 md:divide-y-0 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-4 md:p-4`}
+              className={`${viewMode === "table" ? "md:hidden" : ""
+                } divide-y divide-gray-200 md:divide-y-0 md:grid md:grid-cols-2 xl:grid-cols-3 md:gap-4 md:p-4`}
             >
               {leadsData.leads.map((lead, index) => (
                 <div

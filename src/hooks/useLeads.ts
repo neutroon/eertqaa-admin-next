@@ -12,6 +12,12 @@ export function useLeads(params?: {
   "orderBy.createdAt"?: "asc" | "desc";
   id?: string;
   assignedToSalesId?: string;
+  source?:
+    | "website"
+    | "Cairo University"
+    | "Ain Shams University"
+    | "facebook"
+    | "whatsapp";
 }) {
   const query = useQuery({
     queryKey: ["leads", params],
@@ -24,6 +30,7 @@ export function useLeads(params?: {
         search: params?.search,
         assignedToSalesId: params?.assignedToSalesId,
         "orderBy.createdAt": params?.["orderBy.createdAt"],
+        source: params?.source,
       }), // Large batch for client-side management
     // placeholderData: keepPreviousData,
   });
@@ -46,7 +53,7 @@ export function useLeads(params?: {
 
   if (params?.assignedToSalesId) {
     filteredLeads = filteredLeads.filter(
-      (lead) => lead.assignedToSales?.user?.id === params.assignedToSalesId
+      (lead) => lead.assignedToSales?.user?.id === params.assignedToSalesId,
     );
   }
 
