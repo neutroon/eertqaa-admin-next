@@ -141,13 +141,13 @@ export default function DashboardStats({
               <p className="text-sm font-medium text-gray-600 mb-1">
                 {stat.name}
               </p>
-              <p className="text-3xl font-bold text-gray-900 mb-1">
+              <div className="text-3xl font-bold text-gray-900 mb-1">
                 {loadingStats ? (
                   <LoadingSpinner size="sm" />
                 ) : (
                   stat.value.toLocaleString("ar-EG")
                 )}
-              </p>
+              </div>
               {stat.subtext && (
                 <p className="text-xs text-gray-500">{stat.subtext}</p>
               )}
