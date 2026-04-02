@@ -21,8 +21,8 @@ export default function DashboardLayout({
         <OnlineUsersWidget user={user as any} />
         <SidebarProvider defaultOpen={false}>
           <AnimatePresence mode="wait">
-            <AppSidebar />
-            <SidebarInset className="w-[calc(100%-var(--sidebar-width))]">
+            <AppSidebar key="app-sidebar" />
+            <SidebarInset key="sidebar-inset" className="w-[calc(100%-var(--sidebar-width))]">
               <DashboardHeader />
               <main className="p-4 lg:p-6">{children}</main>
             </SidebarInset>
