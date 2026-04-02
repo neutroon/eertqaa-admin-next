@@ -20,7 +20,7 @@ export default function DashboardLayout({
       <SocketProvider>
         <OnlineUsersWidget user={user as any} />
         <SidebarProvider defaultOpen={false}>
-          <AnimatePresence mode="wait">
+          <AnimatePresence>
             <AppSidebar key="app-sidebar" />
             <SidebarInset key="sidebar-inset" className="w-[calc(100%-var(--sidebar-width))]">
               <DashboardHeader />
