@@ -22,7 +22,7 @@ interface OnlineUser {
 export default function OnlineUsersWidget({
     user,
 }: {
-    user: OnlineUser;
+    user: OnlineUser | null | undefined;
 }) {
     const [isExpanded, setIsExpanded] = useState(false);
     const { data: onlineUsersData, isLoading } = useOnlineUsers();
@@ -30,8 +30,8 @@ export default function OnlineUsersWidget({
 
     // Handle different API response structures
     const users: OnlineUser[] = Array.isArray(onlineUsersData)
-        ? onlineUsersData.filter((usr) => usr.id !== user.id)
-        : (onlineUsersData as { users?: OnlineUser[] })?.users?.filter((usr) => usr.id !== user.id) || [];
+        ? onlineUsersData.filter((usr) => usr?.id !== user?.id)
+        : (onlineUsersData as { users?: OnlineUser[] })?.users?.filter((usr) => usr?.id !== user?.id) || [];
     const userCount = users.length;
 
     return (
