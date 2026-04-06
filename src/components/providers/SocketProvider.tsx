@@ -83,12 +83,21 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       handleLeadsUpdate(data);
     };
 
+    const handleNewNotification = (data: any) => {
+      toast.info(data.title || "تنبيه جديد", {
+        description: data.message || "تفقد قسم الإشعارات",
+      });
+      // Invalidate notifications queries to refresh the list and badge count
+      queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    };
+
     // Events from backend
     socket.on("new_lead", handleNewLead);
     socket.on("lead_claimed", handleLeadClaimed);
     socket.on("lead_updated", handleLeadUpdated);
     socket.on("new_feedback", handleNewFeedback);
     socket.on("online_users_updated", handleOnlineUsersUpdate); 
+    socket.on("new_notification", handleNewNotification);
 
     return () => {
       // console.log("🧹 SocketProvider: Cleaning up listeners");
@@ -97,6 +106,7 @@ export const SocketProvider = ({ children }: { children: React.ReactNode }) => {
       socket.off("lead_updated", handleLeadUpdated);
       socket.off("new_feedback", handleNewFeedback);
       socket.off("online_users_updated", handleOnlineUsersUpdate);
+      socket.off("new_notification", handleNewNotification);
     };
   }, [socket, isConnected, queryClient]);
 
