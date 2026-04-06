@@ -53,15 +53,15 @@ const navigationItems = [
   {
     title: "العملاء المحتملين",
     href: "/dashboard/leads",
-    icon: InboxIcon,
-    activeIcon: InboxIconSolid,
-  },
-  {
-    title: "عملائي",
-    href: "/dashboard/leads/my-leads",
     icon: UserPlusIcon,
     activeIcon: UserPlusIconSolid,
   },
+  // {
+  //   title: "عملائي",
+  //   href: "/dashboard/leads/my-leads",
+  //   icon: InboxIcon,
+  //   activeIcon: InboxIconSolid,
+  // },
   {
     title: "البرامج",
     href: "/dashboard/courses",
@@ -174,10 +174,9 @@ export default function AppSidebar() {
                       tooltip={item.title}
                       className={`
                         relative rounded-lg transition-all duration-200
-                        ${
-                          isActive
-                            ? "bg-blue-50 text-blue-700 border-e-2 border-blue-600"
-                            : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
+                        ${isActive
+                          ? "bg-blue-50 text-blue-700 border-e-2 border-blue-600"
+                          : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                         }
                       `}
                     >
@@ -186,9 +185,8 @@ export default function AppSidebar() {
                         className="flex items-center gap-3 px-3 py-2.5"
                       >
                         <Icon
-                          className={`h-5 w-5 flex-shrink-0 ${
-                            isActive ? "text-blue-600" : "text-gray-500"
-                          }`}
+                          className={`h-5 w-5 flex-shrink-0 ${isActive ? "text-blue-600" : "text-gray-500"
+                            }`}
                         />
                         <span className="font-medium text-sm truncate group-data-[collapsible=icon]:hidden">
                           {item.title}
