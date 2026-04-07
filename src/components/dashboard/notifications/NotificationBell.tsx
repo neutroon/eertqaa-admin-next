@@ -134,7 +134,7 @@ export default function NotificationBell() {
                           
                           {notification.type === 'FOLLOW_UP' && notification.data?.leadId && (
                             <Link 
-                              href={`/dashboard/leads?id=${notification.data.leadId}`}
+                              href={`/dashboard/leads?leadId=${notification.data.leadId}`}
                               className="inline-flex items-center mt-2 px-2 py-1 rounded-md bg-blue-100 text-[10px] font-bold text-blue-700 hover:bg-blue-200 transition-colors"
                               onClick={(e) => e.stopPropagation()}
                             >
