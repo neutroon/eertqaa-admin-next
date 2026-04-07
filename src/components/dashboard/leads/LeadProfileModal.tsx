@@ -108,7 +108,9 @@ export default function LeadProfileModal({
         csAgentId: user.id,
         callOutcome: feedbackForm.callOutcome,
         notes: feedbackForm.notes,
-        nextFollowUpDate: feedbackForm.nextFollowUpDate || undefined,
+        nextFollowUpDate: feedbackForm.nextFollowUpDate
+          ? new Date(feedbackForm.nextFollowUpDate).toISOString()
+          : undefined,
       };
 
       await leadsService.addLeadFeedback(feedbackData);
