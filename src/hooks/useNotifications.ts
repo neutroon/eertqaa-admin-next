@@ -8,7 +8,7 @@ import { NotificationResponse } from "@/types/notifications";
  */
 export const useInfiniteNotifications = (limit = 10) => {
   return useInfiniteQuery({
-    queryKey: ["notifications-infinite", limit],
+    queryKey: ["notifications", "infinite", limit],
     queryFn: async ({ pageParam = 1 }) => {
       const response = await notificationService.getNotifications(pageParam as number, limit);
       if (!response.data) throw new Error("No data received");
@@ -32,7 +32,7 @@ export const useInfiniteNotifications = (limit = 10) => {
  */
 export const useNotifications = (page = 1, limit = 20) => {
   return useQuery({
-    queryKey: ["notifications", page, limit],
+    queryKey: ["notifications", "list", page, limit],
     queryFn: async () => {
       const response = await notificationService.getNotifications(page, limit);
       return response.data;
