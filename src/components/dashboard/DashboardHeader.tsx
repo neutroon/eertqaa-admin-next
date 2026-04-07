@@ -1,16 +1,15 @@
 "use client";
 
 import {
-  BellIcon,
   UserIcon,
   ArrowRightOnRectangleIcon,
   ChevronDownIcon,
-  SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { SidebarTrigger, useSidebar } from "../ui/sidebar";
 import { motion, AnimatePresence } from "framer-motion";
+import NotificationBell from "./notifications/NotificationBell";
 
 export default function DashboardHeader() {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -106,19 +105,7 @@ export default function DashboardHeader() {
             className="flex items-center gap-3"
           >
             {/* Notifications */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              className="relative p-2.5 text-gray-600 hover:bg-gradient-to-br hover:from-blue-50 hover:to-purple-50 rounded-xl transition-all group"
-            >
-              <BellIcon className="w-6 h-6 group-hover:text-blue-600 transition-colors" />
-              <motion.span
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.5, type: "spring" }}
-                className="absolute top-1.5 right-1.5 block w-2.5 h-2.5 bg-gradient-to-r from-red-500 to-pink-500 rounded-full ring-2 ring-white"
-              />
-            </motion.button>
+            <NotificationBell />
 
             {/* User Profile */}
             <div className="relative">
