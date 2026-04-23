@@ -41,7 +41,6 @@ import {
 } from "@/components/ui/sidebar";
 import LoadingSpinner from "../ui/LoadingSpinner";
 import { motion, AnimatePresence } from "framer-motion";
-import { SparklesIcon } from "lucide-react";
 
 const navigationItems = [
   {
@@ -62,6 +61,12 @@ const navigationItems = [
   //   icon: InboxIcon,
   //   activeIcon: InboxIconSolid,
   // },
+  {
+    title: "المستخدمين",
+    href: "/dashboard/users",
+    icon: UserGroupIcon,
+    activeIcon: UserGroupIconSolid,
+  },
   {
     title: "البرامج",
     href: "/dashboard/courses",
