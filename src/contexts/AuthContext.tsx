@@ -15,6 +15,7 @@ interface User {
   id: string;
   name: string;
   phone: string;
+  email: string;
   role: UserRole;
   createdAt: string;
   updatedAt: string;
@@ -38,18 +39,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isVerifying, setIsVerifying] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     // Check if user is authenticated on mount
     const checkAuth = async () => {
+      const isAtLoginPage = pathname === "/login";
+
       try {
         if (authService.isAuthenticated()) {
           const userData = authService.getCurrentUser();
           if (userData) {
-            setUser(userData);
-            setIsAuthenticated(true);
+            // Only set authenticated immediately if we're NOT on the login page
+            // This prevents the "Redirect to Dashboard -> Verification Fails -> Redirect to Login" loop
+            if (!isAtLoginPage) {
+              setUser(userData);
+              setIsAuthenticated(true);
+            }
+            
+            setIsVerifying(true);
 
             // Verify authentication with server (checks cookie validity)
             try {
@@ -58,6 +68,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                 // Update with fresh user data from server
                 const freshUserData = authService.getCurrentUser();
                 setUser(freshUserData);
+                setIsAuthenticated(true);
               } else {
                 // Cookie is invalid, clear auth state
                 setUser(null);
@@ -65,7 +76,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               }
             } catch (error) {
               console.warn("Failed to verify authentication:", error);
-              // Keep local data if verification fails due to network issues
+            } finally {
+              setIsVerifying(false);
             }
           } else {
             // Clear invalid auth state
@@ -73,6 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           }
         } else {
           // Check if there's a valid cookie without local storage
+          setIsVerifying(true);
           try {
             const isValid = await authService.verifyAuthentication();
             if (isValid) {
@@ -82,6 +95,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             }
           } catch (error) {
             console.warn("No valid authentication found:", error);
+          } finally {
+            setIsVerifying(false);
           }
         }
       } catch (error) {
@@ -97,17 +112,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Redirect logic
-    if (!isLoading) {
+    if (!isLoading && !isVerifying) {
       const isLoginPage = pathname === "/login";
       const isDashboardPage = pathname.startsWith("/dashboard");
 
       if (!isAuthenticated && isDashboardPage) {
-        router.push("/login");
+        router.replace("/login");
       } else if (isAuthenticated && isLoginPage) {
-        router.push("/dashboard");
+        router.replace("/dashboard");
       }
     }
-  }, [isAuthenticated, isLoading, pathname, router]);
+  }, [isAuthenticated, isLoading, isVerifying, pathname, router]);
 
   const login = async (
     phone: string,
