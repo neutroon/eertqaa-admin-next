@@ -13,12 +13,12 @@ import {
 import { Button } from "@/components/ui/button";
 import { 
   MoreHorizontal, 
-  UserPen, 
+  UserCog, 
   Trash2, 
   UserCheck, 
   UserX,
   ShieldCheck,
-  Headset
+  Headphones
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
@@ -67,7 +67,7 @@ function ActionDropdown({ user, onEdit, onDelete, onToggleStatus }: {
                 onClick={() => { onEdit(user); setIsOpen(false); }}
                 className="flex w-full items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-blue-50 hover:text-blue-700 transition-colors"
               >
-                <UserPen className="h-4 w-4" />
+                <UserCog className="h-4 w-4" />
                 <span>تعديل البيانات</span>
               </button>
               
@@ -167,7 +167,7 @@ export function UsersTable({
                       </Badge>
                     ) : (
                       <Badge variant="outline" className="bg-blue-50 text-blue-700 border-blue-200 gap-1 px-2 py-0.5">
-                        <Headset className="h-3 w-3" />
+                        <Headphones className="h-3 w-3" />
                         وكيل مبيعات
                       </Badge>
                     )}
