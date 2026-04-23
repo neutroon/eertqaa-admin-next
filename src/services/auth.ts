@@ -40,15 +40,16 @@ export class AuthService {
       if (this.isAuthenticated()) {
         try {
           await apiService.post(API_CONFIG.ENDPOINTS.AUTH.LOGOUT);
-        } catch (error) {
-          // If logout endpoint fails, still clear local storage
-          // console.warn("Logout endpoint failed:", error);
-          toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
+        } catch (error: any) {
+          // If logout endpoint fails with 401 or 404, it means the session is already dead.
+          // We can silently ignore these. For other errors, we could log them.
+          if (error?.status !== 401 && error?.status !== 404) {
+            console.warn("Logout endpoint failed:", error);
+          }
         }
       }
     } catch (error) {
-      // console.error("Logout error:", error);
-      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
+      console.error("Logout error:", error);
     } finally {
       // Always clear local storage (cookies are cleared by server or browser)
       this.clearAuthData();
