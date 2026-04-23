@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import { userService, User, ListUsersResponse } from "@/services/users";
 import { UsersTable } from "@/components/dashboard/users/UsersTable";
 import { Button } from "@/components/ui/button";
@@ -21,6 +23,8 @@ import { toast } from "sonner";
 import { UserRole } from "@/config/api";
 
 export default function UsersPage() {
+  const router = useRouter();
+  const { user } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -82,6 +86,29 @@ export default function UsersPage() {
     }
   };
 
+  // Role check: Only ADMIN can access this page
+  if (user && user.role !== UserRole.ADMIN) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-6">
+        <div className="h-24 w-24 rounded-3xl bg-red-50 flex items-center justify-center text-red-500 shadow-inner">
+          <ShieldCheck className="h-12 w-12" />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold text-gray-900">غير مصرح لك بالدخول</h1>
+          <p className="text-gray-500 max-w-md mx-auto">
+            هذه الصفحة مخصصة لمديري النظام فقط. يرجى العودة للرئيسية.
+          </p>
+        </div>
+        <Button 
+          onClick={() => router.push("/dashboard")}
+          className="bg-blue-600 hover:bg-blue-700 rounded-xl px-8"
+        >
+          العودة للرئيسية
+        </Button>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header section */}
@@ -96,7 +123,7 @@ export default function UsersPage() {
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
           <Button 
             className="bg-white text-blue-700 hover:bg-blue-50 rounded-xl px-6 py-6 font-bold shadow-lg gap-2"
-            onClick={() => window.location.href = "/dashboard/users/new"}
+            onClick={() => router.push("/dashboard/users/new")}
           >
             <UserPlus className="h-5 w-5" />
             إضافة مستخدم جديد
@@ -209,7 +236,7 @@ export default function UsersPage() {
       <UsersTable 
         users={users} 
         isLoading={isLoading} 
-        onEdit={(user) => window.location.href = `/dashboard/users/${user.id}/edit`}
+        onEdit={(user) => router.push(`/dashboard/users/${user.id}/edit`)}
         onDelete={handleDeleteUser}
         onToggleStatus={handleToggleStatus}
       />
