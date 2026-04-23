@@ -62,7 +62,7 @@ export class AuthService {
 
       if (response.success && response.data) {
         // Update stored user data
-        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("adminUser", JSON.stringify(response.data));
         return response.data;
       } else {
         throw new Error(response.message || "Failed to fetch profile");
@@ -117,14 +117,12 @@ export class AuthService {
       const response = await apiService.get(API_CONFIG.ENDPOINTS.AUTH.PROFILE);
       if (response.success && response.data) {
         // Update stored user data with fresh data from server
-        localStorage.setItem("user", JSON.stringify(response.data));
+        localStorage.setItem("adminUser", JSON.stringify(response.data));
         localStorage.setItem("isAuthenticated", "true");
         return true;
       }
       return false;
     } catch (error) {
-      // console.warn("Authentication verification failed:", error);
-      toast.error("حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.");
       // Clear invalid auth state
       this.clearAuthData();
       return false;
