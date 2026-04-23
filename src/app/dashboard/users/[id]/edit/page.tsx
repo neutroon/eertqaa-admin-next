@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 import { userService, User } from "@/services/users";
 import { UserForm } from "@/components/dashboard/users/UserForm";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, UserCog, Loader2 } from "lucide-react";
+import { ArrowRight, UserCog, Loader2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
+import { UserRole } from "@/config/api";
 
 export default function EditUserPage() {
   const router = useRouter();
+  const { user: currentUser } = useAuth();
   const { id } = useParams();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -53,6 +56,29 @@ export default function EditUserPage() {
       setIsSaving(false);
     }
   };
+
+  // Role check: Only ADMIN can access this page
+  if (currentUser && currentUser.role !== UserRole.ADMIN) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-6">
+        <div className="h-24 w-24 rounded-3xl bg-red-50 flex items-center justify-center text-red-500 shadow-inner">
+          <ShieldCheck className="h-12 w-12" />
+        </div>
+        <div className="space-y-2">
+          <h1 className="text-2xl font-bold text-gray-900">غير مصرح لك بالدخول</h1>
+          <p className="text-gray-500 max-w-md mx-auto">
+            هذه الصفحة مخصصة لمديري النظام فقط. يرجى العودة للرئيسية.
+          </p>
+        </div>
+        <Button 
+          onClick={() => router.push("/dashboard")}
+          className="bg-blue-600 hover:bg-blue-700 rounded-xl px-8"
+        >
+          العودة للرئيسية
+        </Button>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
