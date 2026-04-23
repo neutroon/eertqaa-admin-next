@@ -80,6 +80,7 @@ export interface LoginResponse {
   id: string;
   name: string;
   phone: string;
+  email: string;
   role: UserRole;
   createdAt: string;
   updatedAt: string;
