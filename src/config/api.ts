@@ -1,4 +1,5 @@
 import { UserRole } from "@/contexts/AuthContext";
+export { UserRole };
 
 // API Configuration
 export const API_CONFIG = {
@@ -6,10 +7,10 @@ export const API_CONFIG = {
   TIMEOUT: parseInt(process.env.NEXT_PUBLIC_API_TIMEOUT || "10000"),
   ENDPOINTS: {
     AUTH: {
-      LOGIN: "/api/v1/users/login",
-      REFRESH: "/api/v1/users/refresh",
-      LOGOUT: "/api/v1/users/logout",
-      PROFILE: "/api/v1/users/profile",
+      LOGIN: "/api/v1/auth/login",
+      REFRESH: "/api/v1/auth/refresh",
+      LOGOUT: "/api/v1/auth/logout",
+      PROFILE: "/api/v1/auth/profile",
     },
 
     LEADS: {
@@ -35,6 +36,12 @@ export const API_CONFIG = {
       DELETE: "/api/v1/courses/categories",
     },
     USERS: {
+      LIST: "/api/v1/users/list",
+      CREATE: "/api/v1/users",
+      GET_BY_ID: "/api/v1/users",
+      UPDATE: "/api/v1/users",
+      TOGGLE_STATUS: "/api/v1/users",
+      DELETE: "/api/v1/users",
       ONLINE_USERS: "/api/v1/users/online",
       ONLINE_SALES_AGENTS: "/api/v1/users/online/sales-agents",
     },
