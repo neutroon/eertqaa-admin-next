@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { 
   ShieldCheck, 
-  Headset, 
+  Headphones, 
   Mail, 
   Phone, 
   User as UserIcon, 
@@ -125,7 +125,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
             <div className={`h-12 w-12 rounded-xl flex items-center justify-center ${
               formData.role === UserRole.SALES_AGENT ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-500"
             }`}>
-              <Headset className="h-6 w-6" />
+              <Headphones className="h-6 w-6" />
             </div>
             <div>
               <p className={`font-bold ${formData.role === UserRole.SALES_AGENT ? "text-blue-700" : "text-gray-900"}`}>
