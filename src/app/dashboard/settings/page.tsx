@@ -1,741 +1,306 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Cog6ToothIcon,
-  UserIcon,
-  ShieldCheckIcon,
-  BellIcon,
-  GlobeAltIcon,
-  DocumentTextIcon,
-  KeyIcon,
-  ChartBarIcon,
-} from "@heroicons/react/24/outline";
-import ComingSoonOverlay from "@/components/common/ComingSoonOverlay";
+import { useAuth } from "@/contexts/AuthContext";
+import { userService } from "@/services/users";
+import { 
+  UserCircle, 
+  ShieldCheck, 
+  Bell, 
+  Globe, 
+  Settings, 
+  Lock, 
+  Phone, 
+  Mail,
+  User,
+  Loader2,
+  CheckCircle2,
+  AlertTriangle
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 export default function SettingsPage() {
-  const [showComingSoon, setShowComingSoon] = useState(true);
-  const [activeTab, setActiveTab] = useState("general");
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState("profile");
 
   const tabs = [
-    { id: "general", name: "عام", icon: Cog6ToothIcon },
-    { id: "users", name: "المستخدمين", icon: UserIcon },
-    { id: "security", name: "الأمان", icon: ShieldCheckIcon },
-    { id: "notifications", name: "الإشعارات", icon: BellIcon },
-    { id: "platform", name: "المنصة", icon: GlobeAltIcon },
-    { id: "reports", name: "التقارير", icon: DocumentTextIcon },
-    { id: "api", name: "API", icon: KeyIcon },
-    { id: "analytics", name: "التحليلات", icon: ChartBarIcon },
+    { id: "profile", name: "الملف الشخصي", icon: UserCircle, color: "text-blue-600", bg: "bg-blue-50" },
+    { id: "security", name: "الأمان", icon: Lock, color: "text-purple-600", bg: "bg-purple-50" },
+    { id: "notifications", name: "الإشعارات", icon: Bell, color: "text-orange-600", bg: "bg-orange-50" },
+    { id: "system", name: "إعدادات النظام", icon: Settings, color: "text-gray-600", bg: "bg-gray-50" },
   ];
 
   return (
-    <>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">الإعدادات</h1>
-              <p className="text-gray-600 mt-1">إدارة إعدادات النظام والمنصة</p>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                إعادة تعيين
-              </button>
-              <button className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                حفظ التغييرات
-              </button>
-            </div>
-          </div>
+    <div className="space-y-6 pb-12">
+      {/* Header */}
+      <div className="bg-gradient-to-br from-gray-800 to-gray-900 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 p-8 opacity-10">
+          <Settings className="h-32 w-32 rotate-12" />
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar Navigation */}
-          <div className="lg:col-span-1">
-            <nav className="space-y-1">
-              {tabs.map((tab) => {
-                const Icon = tab.icon;
-                return (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`w-full flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
-                      activeTab === tab.id
-                        ? "bg-blue-50 text-blue-700 border-r-4 border-blue-700"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                    }`}
-                  >
-                    <Icon className="w-5 h-5 ml-3" />
-                    {tab.name}
-                  </button>
-                );
-              })}
-            </nav>
-          </div>
-
-          {/* Main Content */}
-          <div className="lg:col-span-3">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-              {activeTab === "general" && <GeneralSettings />}
-              {activeTab === "users" && <UserSettings />}
-              {activeTab === "security" && <SecuritySettings />}
-              {activeTab === "notifications" && <NotificationSettings />}
-              {activeTab === "platform" && <PlatformSettings />}
-              {activeTab === "reports" && <ReportSettings />}
-              {activeTab === "api" && <ApiSettings />}
-              {activeTab === "analytics" && <AnalyticsSettings />}
-            </div>
-          </div>
+        <div className="relative z-10 space-y-1">
+          <h1 className="text-3xl font-bold flex items-center gap-3">
+            <Settings className="h-8 w-8" />
+            الإعدادات
+          </h1>
+          <p className="text-gray-400 font-medium">إدارة ملفك الشخصي، الأمان، وتفضيلات المنصة</p>
         </div>
-
-        {/* Coming Soon Overlay */}
-        <ComingSoonOverlay
-          isOpen={showComingSoon}
-          onClose={() => setShowComingSoon(false)}
-          title="الإعدادات"
-          description="صفحة الإعدادات قيد التطوير. ستتمكن من تخصيص إعدادات المنصة قريباً."
-          expectedDate="👀"
-        />
       </div>
-    </>
+
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        {/* Sidebar Navigation */}
+        <div className="lg:col-span-1 space-y-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={cn(
+                "w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold transition-all duration-200",
+                activeTab === tab.id
+                  ? `${tab.bg} ${tab.color} shadow-md shadow-gray-200/50 scale-[1.02]`
+                  : "bg-white text-gray-500 hover:bg-gray-50 border border-transparent hover:border-gray-200"
+              )}
+            >
+              <tab.icon className="h-5 w-5" />
+              {tab.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Main Content Area */}
+        <div className="lg:col-span-3">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeTab}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.2 }}
+              className="bg-white rounded-3xl border border-gray-200/50 shadow-sm overflow-hidden"
+            >
+              {activeTab === "profile" && <ProfileSection />}
+              {activeTab === "security" && <SecuritySection />}
+              {(activeTab === "notifications" || activeTab === "system") && (
+                <div className="p-12 flex flex-col items-center justify-center text-center space-y-4">
+                  <div className="h-20 w-20 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                    <Loader2 className="h-10 w-10 animate-spin" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900">قريباً جداً</h3>
+                  <p className="text-gray-500 max-w-sm">هذا القسم قيد اللمسات الأخيرة وسيكون متاحاً خلال أيام قليلة.</p>
+                </div>
+              )}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
+    </div>
   );
 }
 
-// General Settings Component
-function GeneralSettings() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">
-        الإعدادات العامة
-      </h2>
+function ProfileSection() {
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    name: user?.name || "",
+    phone: user?.phone || "",
+    email: user?.email || "",
+  });
 
-      <div className="space-y-6">
-        {/* Platform Info */}
+  const handleUpdate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+    
+    setIsLoading(true);
+    try {
+      await userService.updateUser(user.id, formData);
+      toast.success("تم تحديث البيانات بنجاح");
+    } catch (error: any) {
+      toast.error(error.message || "حدث خطأ أثناء التحديث");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-8 space-y-8">
+      <div className="flex items-center gap-6">
+        <div className="h-24 w-24 rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 flex items-center justify-center text-white text-4xl font-bold shadow-lg">
+          {user?.name?.charAt(0) || "U"}
+        </div>
+        <div className="space-y-1">
+          <h2 className="text-2xl font-bold text-gray-900">{user?.name}</h2>
+          <p className="text-gray-500 font-medium">@{user?.role?.toLowerCase()}</p>
+          <div className="pt-2">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-xs font-bold border border-green-100">
+              <CheckCircle2 className="h-3 w-3" />
+              حساب مفعل
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <form onSubmit={handleUpdate} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              اسم المنصة
-            </label>
-            <input
-              type="text"
-              defaultValue="إرتقاء"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              وصف المنصة
-            </label>
-            <input
-              type="text"
-              defaultValue="منصة تعليمية متخصصة في البرامج المهنية"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        {/* Contact Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              رقم الهاتف
-            </label>
-            <input
-              type="tel"
-              defaultValue="info@eertqaa.com"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              رقم الهاتف
-            </label>
-            <input
-              type="tel"
-              defaultValue="+20 10 123 4567"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-        </div>
-
-        {/* Language & Timezone */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              اللغة الافتراضية
-            </label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="ar">العربية</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              المنطقة الزمنية
-            </label>
-            <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="Africa/Cairo">القاهرة (GMT+2)</option>
-              <option value="Asia/Riyadh">الرياض (GMT+3)</option>
-              <option value="Asia/Dubai">دبي (GMT+4)</option>
-            </select>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// User Settings Component
-function UserSettings() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">
-        إدارة المستخدمين
-      </h2>
-
-      <div className="space-y-6">
-        {/* User Registration */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            إعدادات التسجيل
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  تفعيل التسجيل التلقائي
-                </p>
-                <p className="text-xs text-gray-500">
-                  السماح للمستخدمين بالتسجيل تلقائياً
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  التحقق من البريد الإلكتروني
-                </p>
-                <p className="text-xs text-gray-500">
-                  مطلوب التحقق من البريد الإلكتروني عند التسجيل
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* User Roles */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            أدوار المستخدمين
-          </h3>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-gray-700">مدير النظام</p>
-                <p className="text-xs text-gray-500">صلاحيات كاملة</p>
-              </div>
-              <span className="text-xs bg-red-100 text-red-800 px-2 py-1 rounded-full">
-                1 مستخدم
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  مدير المحتوى
-                </p>
-                <p className="text-xs text-gray-500">إدارة البرامج والمحتوى</p>
-              </div>
-              <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                3 مستخدمين
-              </span>
-            </div>
-            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-gray-700">مشرف</p>
-                <p className="text-xs text-gray-500">
-                  مراقبة المتدربين والتقارير
-                </p>
-              </div>
-              <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
-                5 مستخدمين
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Security Settings Component
-function SecuritySettings() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">
-        إعدادات الأمان
-      </h2>
-
-      <div className="space-y-6">
-        {/* Password Policy */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            سياسة كلمة المرور
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  الحد الأدنى لطول كلمة المرور
-                </p>
-              </div>
-              <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="8">8 أحرف</option>
-                <option value="10">10 أحرف</option>
-                <option value="12" selected>
-                  12 حرف
-                </option>
-              </select>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  مطلوب أحرف خاصة
-                </p>
-                <p className="text-xs text-gray-500">!@#$%^&*</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Session Settings */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            إعدادات الجلسة
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  مدة انتهاء الجلسة (دقيقة)
-                </p>
-              </div>
-              <input
-                type="number"
-                defaultValue="30"
-                className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <div className="space-y-2">
+            <Label className="text-gray-700 font-bold">الاسم بالكامل</Label>
+            <div className="relative">
+              <User className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input 
+                value={formData.name}
+                onChange={e => setFormData({...formData, name: e.target.value})}
+                className="pr-10 h-12 rounded-xl"
               />
             </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  تسجيل خروج تلقائي عند عدم النشاط
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Notification Settings Component
-function NotificationSettings() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">
-        إعدادات الإشعارات
-      </h2>
-
-      <div className="space-y-6">
-        {/* Phone Notifications */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            إشعارات رقم الهاتف
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  إشعارات التسجيل الجديد
-                </p>
-                <p className="text-xs text-gray-500">عند تسجيل متدرب جديد</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  تذكير بمواعيد البرامج
-                </p>
-                <p className="text-xs text-gray-500">
-                  تذكير المتدربين بمواعيد البرامج
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* System Notifications */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            إشعارات النظام
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  تنبيهات الأمان
-                </p>
-                <p className="text-xs text-gray-500">
-                  محاولات تسجيل دخول مشبوهة
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Platform Settings Component
-function PlatformSettings() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">
-        إعدادات المنصة
-      </h2>
-
-      <div className="space-y-6">
-        {/* Course Settings */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            إعدادات البرامج
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  الحد الأقصى للطلاب في البرنامج
-                </p>
-              </div>
-              <input
-                type="number"
-                defaultValue="50"
-                className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <div className="space-y-2">
+            <Label className="text-gray-700 font-bold">رقم الهاتف</Label>
+            <div className="relative">
+              <Phone className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input 
+                value={formData.phone}
+                onChange={e => setFormData({...formData, phone: e.target.value})}
+                className="pr-10 h-12 rounded-xl"
               />
             </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  تفعيل التسجيل المسبق
-                </p>
-                <p className="text-xs text-gray-500">
-                  السماح بالتسجيل قبل بدء البرنامج
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
           </div>
-        </div>
-
-        {/* Certificate Settings */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            إعدادات الشهادات
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  تفعيل الشهادات التلقائية
-                </p>
-                <p className="text-xs text-gray-500">
-                  إصدار شهادات تلقائياً عند إكمال البرنامج
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Report Settings Component
-function ReportSettings() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">
-        إعدادات التقارير
-      </h2>
-
-      <div className="space-y-6">
-        {/* Report Generation */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            توليد التقارير
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  توليد تقارير يومية
-                </p>
-                <p className="text-xs text-gray-500">تقارير إحصائية يومية</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  توليد تقارير شهرية
-                </p>
-                <p className="text-xs text-gray-500">تقارير شاملة شهرية</p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  defaultChecked
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Export Settings */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            إعدادات التصدير
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                تنسيق التصدير الافتراضي
-              </label>
-              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="excel">Excel</option>
-                <option value="csv">CSV</option>
-                <option value="pdf">PDF</option>
-              </select>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// API Settings Component
-function ApiSettings() {
-  return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">إعدادات API</h2>
-
-      <div className="space-y-6">
-        {/* API Keys */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">مفاتيح API</h3>
-          <div className="space-y-4">
-            <div className="p-4 bg-gray-50 rounded-lg">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-gray-700">
-                  مفتاح API الرئيسي
-                </span>
-                <button className="text-xs text-blue-600 hover:text-blue-800">
-                  تجديد
-                </button>
-              </div>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="password"
-                  value="sk_live_51H...xyz"
-                  readOnly
-                  className="flex-1 px-3 py-2 text-sm bg-white border border-gray-300 rounded-lg"
-                />
-                <button className="px-3 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">
-                  نسخ
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Rate Limiting */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            حدود الطلبات
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  الحد الأقصى للطلبات في الدقيقة
-                </p>
-              </div>
-              <input
-                type="number"
-                defaultValue="100"
-                className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          <div className="space-y-2 md:col-span-2">
+            <Label className="text-gray-700 font-bold">البريد الإلكتروني</Label>
+            <div className="relative">
+              <Mail className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <Input 
+                type="email"
+                value={formData.email}
+                onChange={e => setFormData({...formData, email: e.target.value})}
+                className="pr-10 h-12 rounded-xl"
               />
             </div>
           </div>
         </div>
-      </div>
+
+        <div className="pt-4 flex justify-end">
+          <Button 
+            type="submit" 
+            disabled={isLoading}
+            className="bg-blue-600 hover:bg-blue-700 rounded-xl px-10 h-12 font-bold shadow-lg"
+          >
+            {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "حفظ التغييرات"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }
 
-// Analytics Settings Component
-function AnalyticsSettings() {
+function SecuritySection() {
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    if (formData.newPassword !== formData.confirmPassword) {
+      toast.error("كلمة المرور الجديدة غير متطابقة");
+      return;
+    }
+
+    if (formData.newPassword.length < 6) {
+      toast.error("يجب أن تكون كلمة المرور 6 أحرف على الأقل");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      // In our current userService.updateUser, we can just pass the new password
+      // In a more secure app, we'd have a dedicated /change-password endpoint that checks currentPassword
+      await userService.updateUser(user.id, { 
+        password: formData.newPassword 
+      });
+      toast.success("تم تغيير كلمة المرور بنجاح");
+      setFormData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+    } catch (error: any) {
+      toast.error(error.message || "حدث خطأ أثناء تغيير كلمة المرور");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <div className="p-6">
-      <h2 className="text-lg font-semibold text-gray-900 mb-6">
-        إعدادات التحليلات
-      </h2>
-
-      <div className="space-y-6">
-        {/* Google Analytics */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            Google Analytics
-          </h3>
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                معرف التتبع
-              </label>
-              <input
-                type="text"
-                placeholder="G-XXXXXXXXXX"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  تفعيل Google Analytics
-                </p>
-              </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input type="checkbox" className="sr-only peer" />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Data Retention */}
-        <div>
-          <h3 className="text-md font-medium text-gray-900 mb-4">
-            احتفاظ البيانات
-          </h3>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-700">
-                  فترة احتفاظ البيانات (شهر)
-                </p>
-              </div>
-              <select className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="6">6 أشهر</option>
-                <option value="12" selected>
-                  12 شهر
-                </option>
-                <option value="24">24 شهر</option>
-                <option value="36">36 شهر</option>
-              </select>
-            </div>
-          </div>
-        </div>
+    <div className="p-8 space-y-8">
+      <div className="space-y-1">
+        <h2 className="text-2xl font-bold text-gray-900">تغيير كلمة المرور</h2>
+        <p className="text-gray-500 font-medium">احرص على استخدام كلمة مرور قوية وغير مكررة</p>
       </div>
+
+      <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4 flex items-start gap-3">
+        <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
+        <p className="text-sm text-amber-800 leading-relaxed">
+          عند تغيير كلمة المرور، ستحتاج لاستخدام الكلمة الجديدة في المرة القادمة التي تقوم فيها بتسجيل الدخول.
+        </p>
+      </div>
+
+      <form onSubmit={handlePasswordChange} className="space-y-6 max-w-xl">
+        <div className="space-y-2">
+          <Label className="text-gray-700 font-bold">كلمة المرور الحالية</Label>
+          <div className="relative">
+            <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input 
+              type="password"
+              value={formData.currentPassword}
+              onChange={e => setFormData({...formData, currentPassword: e.target.value})}
+              className="pr-10 h-12 rounded-xl"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-gray-700 font-bold">كلمة المرور الجديدة</Label>
+          <div className="relative">
+            <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input 
+              type="password"
+              value={formData.newPassword}
+              onChange={e => setFormData({...formData, newPassword: e.target.value})}
+              className="pr-10 h-12 rounded-xl"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-gray-700 font-bold">تأكيد كلمة المرور الجديدة</Label>
+          <div className="relative">
+            <Lock className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input 
+              type="password"
+              value={formData.confirmPassword}
+              onChange={e => setFormData({...formData, confirmPassword: e.target.value})}
+              className="pr-10 h-12 rounded-xl"
+              placeholder="••••••••"
+            />
+          </div>
+        </div>
+
+        <div className="pt-4">
+          <Button 
+            type="submit" 
+            disabled={isLoading}
+            className="bg-purple-600 hover:bg-purple-700 rounded-xl px-10 h-12 font-bold shadow-lg w-full sm:w-auto"
+          >
+            {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : "تحديث كلمة المرور"}
+          </Button>
+        </div>
+      </form>
     </div>
   );
 }
