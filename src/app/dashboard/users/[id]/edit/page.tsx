@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import { userService, User } from "@/services/users";
 import { UserForm } from "@/components/dashboard/users/UserForm";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, UserPen, Loader2 } from "lucide-react";
+import { ArrowRight, UserCog, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function EditUserPage() {
@@ -80,7 +80,7 @@ export default function EditUserPage() {
         <div className="bg-gradient-to-br from-blue-600 to-purple-700 p-8 text-white">
           <div className="flex items-center gap-4">
             <div className="h-14 w-14 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center">
-              <UserPen className="h-8 w-8 text-white" />
+              <UserCog className="h-8 w-8 text-white" />
             </div>
             <div>
               <h1 className="text-2xl font-bold">تعديل بيانات المستخدم</h1>
