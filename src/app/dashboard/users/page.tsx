@@ -11,7 +11,7 @@ import {
   Filter, 
   Users as UsersIcon, 
   ShieldCheck, 
-  Headset,
+  Headphones,
   ArrowRight,
   ArrowLeft,
   X
@@ -128,7 +128,7 @@ export default function UsersPage() {
         </div>
         <div className="bg-white p-6 rounded-2xl border border-gray-200/50 shadow-sm flex items-center gap-4">
           <div className="h-12 w-12 rounded-xl bg-orange-50 flex items-center justify-center text-orange-600">
-            <Headset className="h-6 w-6" />
+            <Headphones className="h-6 w-6" />
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500">وكلاء المبيعات</p>
