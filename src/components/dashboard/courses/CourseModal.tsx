@@ -1,16 +1,30 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { XMarkIcon } from "@heroicons/react/24/outline";
-import {
-  Course,
-  Category,
-  UpdateCourseRequest,
-  CreateCourseRequest,
+import { 
+  Course, 
+  Category, 
+  UpdateCourseRequest, 
+  CreateCourseRequest 
 } from "@/config/api";
 import { coursesService } from "@/services/courses";
-import LoadingSpinner from "@/components/ui/LoadingSpinner";
 import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  X, 
+  BookOpen, 
+  Calendar, 
+  Users, 
+  Tag, 
+  FileText, 
+  CheckCircle,
+  Plus,
+  Loader2
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 
 interface CourseModalProps {
   course?: Course | null;
@@ -29,8 +43,7 @@ export default function CourseModal({
   onCourseUpdated,
   onRefresh,
 }: CourseModalProps) {
-  const [formData, setFormData] = useState<Course | any>({
-    // id: "",
+  const [formData, setFormData] = useState<any>({
     title: "",
     description: "",
     categoryId: "",
@@ -39,16 +52,14 @@ export default function CourseModal({
     summary: "",
     duration: 0,
     availableSeats: 0,
-    createdAt: "",
-    updatedAt: "",
     features: [] as string[],
-    // selectedFeatures: [] as string[], // Array to store selected feature names
-  }) as any;
+    status: "active"
+  });
   const [newFeature, setNewFeature] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     if (course) {
-      // Editing existing course
       setFormData({
         title: course.title || "",
         description: course.description || "",
@@ -59,78 +70,30 @@ export default function CourseModal({
         categoryId: course.categoryId || "",
         summary: course.summary || "",
         features: course.features?.map((f) => f.name) || [],
-      });
-    } else {
-      // Creating new course - reset form
-      setFormData({
-        title: "",
-        description: "",
-        summary: "",
-        duration: 0,
-        categoryId: "",
-        availableSeats: 0,
-        price: 0,
-        imageUrl: "",
-        features: [],
+        status: course.status || "active"
       });
     }
   }, [course]);
 
-  const updateCourse = async (courseData: UpdateCourseRequest) => {
-    try {
-      setIsLoading(true);
-      const updatedCourse = await coursesService.updateCourse(
-        course?.id || "",
-        courseData
-      );
-      onCourseUpdated(updatedCourse);
-      toast.success("تم تحديث البرنامج بنجاح");
-      onClose();
-    } catch (error: any) {
-      console.error("Update course error:", error);
-      toast.error("فشل في تحديث البرنامج");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const createCourse = async (courseData: CreateCourseRequest) => {
-    try {
-      setIsLoading(true);
-      const newCourse = await coursesService.createCourse(courseData);
-      onCourseCreated(newCourse);
-      toast.success("تم إضافة البرنامج بنجاح");
-      onClose();
-    } catch (error: any) {
-      console.error("Create course error:", error);
-      toast.error("فشل في إضافة البرنامج");
-    } finally {
-      setIsLoading(false);
-    }
-  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (course) {
-      await updateCourse(formData);
-    } else {
-      await createCourse(formData);
+    setIsLoading(true);
+    try {
+      if (course) {
+        const updated = await coursesService.updateCourse(course.id, formData);
+        onCourseUpdated(updated);
+        toast.success("تم تحديث البرنامج بنجاح");
+      } else {
+        const created = await coursesService.createCourse(formData);
+        onCourseCreated(created);
+        toast.success("تم إضافة البرنامج بنجاح");
+      }
+    } catch (error: any) {
+      console.error("Course action error:", error);
+      toast.error(error.message || "حدث خطأ أثناء حفظ البيانات");
+    } finally {
+      setIsLoading(false);
     }
-  };
-
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev: any) => ({
-      ...prev,
-      [name]:
-        name === "duration" || name === "availableSeats" || name === "price"
-          ? Number(value)
-          : value,
-    }));
   };
 
   const addFeature = () => {
@@ -143,278 +106,171 @@ export default function CourseModal({
     }
   };
 
-  const removeFeature = (featureToRemove: string) => {
-    setFormData((prev: any) => ({
-      ...prev,
-      features: prev.features.filter(
-        (feature: string) => feature !== featureToRemove
-      ),
-    }));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      addFeature();
-    }
-  };
-
-  // Available features options
-  // const availableFeatures = [
-  //   "دعم فني",
-  //   "مرونة في التعلم",
-  //   "شهادة معتمدة",
-  //   "مواد تعليمية شاملة",
-  //   "تطبيقات عملية",
-  //   "متابعة فردية",
-  // ];
-
-  // const handleFeatureToggle = (featureName: string) => {
-  //   setFormData((prev: any) => {
-  //     const currentFeatures = prev.features || [];
-  //     const isSelected = currentFeatures.includes(featureName);
-
-  //     return {
-  //       ...prev,
-  //       features: isSelected
-  //         ? currentFeatures.filter((f: string) => f !== featureName)
-  //         : [...currentFeatures, featureName],
-  //     };
-  //   });
-  // };
-
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
-            {course ? "تعديل البرنامج" : "إضافة برنامج جديد"}
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <XMarkIcon className="w-6 h-6" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden"
+        dir="rtl"
+      >
+        {/* Header */}
+        <div className="bg-gradient-to-br from-indigo-600 to-blue-700 p-6 text-white flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg">
+              <BookOpen className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold">{course ? "تعديل البرنامج" : "إضافة برنامج جديد"}</h3>
+              <p className="text-indigo-100 text-sm">قم بإدخال تفاصيل البرنامج التعليمي والمميزات</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="h-10 w-10 rounded-xl bg-black/10 hover:bg-black/20 flex items-center justify-center transition-colors">
+            <X className="h-6 w-6" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                عنوان البرنامج *
-              </label>
-              <input
-                type="text"
-                name="title"
+        <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Title */}
+            <div className="space-y-2">
+              <Label className="text-gray-700 font-semibold">عنوان البرنامج</Label>
+              <Input 
                 value={formData.title}
-                onChange={handleChange}
+                onChange={e => setFormData({...formData, title: e.target.value})}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="h-12 rounded-xl border-gray-200"
+                placeholder="مثال: دبلومة إدارة الأعمال"
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                الفئة *
-              </label>
-              <select
-                name="categoryId"
+            {/* Category */}
+            <div className="space-y-2">
+              <Label className="text-gray-700 font-semibold">الفئة التعليمية</Label>
+              <select 
                 value={formData.categoryId}
-                onChange={handleChange}
+                onChange={e => setFormData({...formData, categoryId: e.target.value})}
                 required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-12 rounded-xl border border-gray-200 px-3 bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
               >
-                <option value="">اختر الفئة</option>
-                {categories.map((cat) => (
-                  <option key={`cat-${cat.id}`} value={cat.id}>
-                    {cat.name}
-                  </option>
+                <option value="">اختر الفئة...</option>
+                {categories.map(cat => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                المدة (شهر) *
-              </label>
-              <input
-                type="number"
-                name="duration"
-                value={formData.duration}
-                onChange={handleChange}
-                required
-                min="1"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                السعر (ج.م) *
-              </label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                required
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div> */}
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                المقاعد المتاحة *
-              </label>
-              <input
-                type="number"
-                name="availableSeats"
-                value={formData.availableSeats}
-                onChange={handleChange}
-                required
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                السعر (ج.م) *
-              </label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleChange}
-                required
-                min="0"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div> */}
-
-            {/* <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                رابط الصورة
-              </label>
-              <input
-                type="url"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleChange}
-                placeholder="https://example.com/image.jpg"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div> */}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              وصف البرنامج *
-            </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleChange}
-              rows={4}
-              required
-              placeholder="اكتب وصفاً مفصلاً للبرنامج"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-          {/* <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              ملخص المحتوي
-            </label>
-            <textarea
-              name="summary"
-              value={formData.summary}
-              onChange={handleChange}
-              rows={2}
-              placeholder="اكتب ملخص محتويات البرنامج"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div> */}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              مميزات البرنامج
-            </label>
-
-            {/* Add new feature input */}
-            <div className="flex gap-2 mb-3">
-              <input
-                type="text"
-                value={newFeature}
-                onChange={(e) => setNewFeature(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="أضف ميزة جديدة"
-                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-              <button
-                type="button"
-                onClick={addFeature}
-                disabled={!newFeature.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
-                إضافة
-              </button>
-            </div>
-
-            {/* Display selected features */}
-            {formData.features?.length > 0 && (
-              <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto">
-                <p className="text-sm text-gray-600 mb-2">الميزات المحددة:</p>
-                <div className="flex flex-wrap gap-2">
-                  {formData.features.map((feature: string, index: number) => (
-                    <span
-                      key={`${feature}-${index}`}
-                      className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
-                    >
-                      {feature}
-                      <button
-                        type="button"
-                        onClick={() => removeFeature(feature)}
-                        className="mr-1 inline-flex items-center justify-center w-4 h-4 text-blue-400 hover:bg-blue-200 hover:text-blue-600 rounded-full"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
+            {/* Duration */}
+            <div className="space-y-2">
+              <Label className="text-gray-700 font-semibold">المدة (بالشهور)</Label>
+              <div className="relative">
+                <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input 
+                  type="number"
+                  value={formData.duration}
+                  onChange={e => setFormData({...formData, duration: Number(e.target.value)})}
+                  required
+                  className="pr-10 h-12 rounded-xl border-gray-200"
+                />
               </div>
-            )}
+            </div>
+
+            {/* Seats */}
+            <div className="space-y-2">
+              <Label className="text-gray-700 font-semibold">المقاعد المتاحة</Label>
+              <div className="relative">
+                <Users className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input 
+                  type="number"
+                  value={formData.availableSeats}
+                  onChange={e => setFormData({...formData, availableSeats: Number(e.target.value)})}
+                  required
+                  className="pr-10 h-12 rounded-xl border-gray-200"
+                />
+              </div>
+            </div>
           </div>
 
-          <div className="flex justify-end space-x-3 pt-4">
-            <button
-              type="button"
+          {/* Description */}
+          <div className="space-y-2">
+            <Label className="text-gray-700 font-semibold">وصف البرنامج</Label>
+            <textarea 
+              value={formData.description}
+              onChange={e => setFormData({...formData, description: e.target.value})}
+              required
+              rows={3}
+              className="w-full rounded-xl border border-gray-200 p-4 focus:ring-2 focus:ring-indigo-500/20 transition-all outline-none"
+              placeholder="اكتب وصفاً مفصلاً للبرنامج التدريبي..."
+            />
+          </div>
+
+          {/* Features */}
+          <div className="space-y-3">
+            <Label className="text-gray-700 font-semibold">مميزات البرنامج</Label>
+            <div className="flex gap-2">
+              <Input 
+                value={newFeature}
+                onChange={e => setNewFeature(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addFeature())}
+                placeholder="أضف ميزة جديدة (مثال: شهادة معتمدة)"
+                className="h-12 rounded-xl border-gray-200"
+              />
+              <Button 
+                type="button" 
+                onClick={addFeature}
+                className="h-12 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700"
+              >
+                <Plus className="h-5 w-5" />
+              </Button>
+            </div>
+            <div className="flex flex-wrap gap-2 pt-2">
+              {formData.features.map((feature: string, i: number) => (
+                <Badge 
+                  key={i} 
+                  className="bg-indigo-50 text-indigo-700 border-indigo-100 hover:bg-indigo-100 px-3 py-1.5 rounded-full flex items-center gap-2"
+                >
+                  <CheckCircle className="h-3 w-3" />
+                  {feature}
+                  <button 
+                    type="button" 
+                    onClick={() => setFormData({...formData, features: formData.features.filter((_: any, idx: number) => idx !== i)})}
+                    className="hover:text-red-600 transition-colors"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          </div>
+
+          {/* Footer Actions */}
+          <div className="pt-6 border-t border-gray-100 flex justify-end gap-3">
+            <Button 
+              type="button" 
+              variant="ghost" 
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
+              className="h-12 px-8 rounded-xl"
             >
               إلغاء
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            </Button>
+            <Button 
+              type="submit" 
+              disabled={isLoading}
+              className="h-12 px-10 rounded-xl bg-indigo-600 hover:bg-indigo-700 font-bold shadow-lg"
             >
               {isLoading ? (
-                <div className="flex items-center">
-                  <LoadingSpinner size="sm" />
-                  <span className="mr-2">جاري التحميل...</span>
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  جاري الحفظ...
                 </div>
-              ) : course ? (
-                "حفظ التعديلات"
               ) : (
-                "إضافة البرنامج"
+                course ? "تحديث البيانات" : "إنشاء البرنامج"
               )}
-              {/* {course ? "حفظ التعديلات" : "إضافة البرنامج"} */}
-            </button>
+            </Button>
           </div>
         </form>
-      </div>
+      </motion.div>
     </div>
   );
 }
