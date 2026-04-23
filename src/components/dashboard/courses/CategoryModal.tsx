@@ -1,10 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { XMarkIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Category } from "@/config/api";
 import { categoriesService } from "@/services/categories";
-import { LoaderIcon } from "lucide-react";
+import { 
+  X, 
+  Plus, 
+  Trash2, 
+  Tags, 
+  Loader2, 
+  LayoutList,
+  AlertCircle
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface CategoryModalProps {
   onClose: () => void;
@@ -21,38 +33,38 @@ export default function CategoryModal({
   onCategoryDeleted,
   onRefresh,
 }: CategoryModalProps) {
-  const [newCategory, setNewCategory] = useState({
-    name: "",
-  });
+  const [newCategoryName, setNewCategoryName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newCategory.name.trim()) return;
+    if (!newCategoryName.trim()) return;
 
     try {
       setIsLoading(true);
-      await categoriesService.createCategory(newCategory as Category);
-      setNewCategory({ name: "" });
+      await categoriesService.createCategory({ name: newCategoryName } as Category);
+      setNewCategoryName("");
       onCategoryCreated();
+      toast.success("تم إضافة الفئة بنجاح");
     } catch (error) {
       console.error("Failed to create category:", error);
-      alert("فشل في إضافة الفئة. يرجى المحاولة مرة أخرى.");
+      toast.error("فشل في إضافة الفئة");
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    if (confirm("هل أنت متأكد من حذف هذه الفئة؟")) {
+    if (confirm("هل أنت متأكد من حذف هذه الفئة؟ سيتم حذف جميع البرامج المرتبطة بها.")) {
       try {
         setIsDeleting(categoryId);
         await categoriesService.deleteCategory(categoryId);
         onCategoryDeleted();
+        toast.success("تم حذف الفئة بنجاح");
       } catch (error) {
         console.error("Failed to delete category:", error);
-        alert("فشل في حذف الفئة. يرجى المحاولة مرة أخرى.");
+        toast.error("فشل في حذف الفئة");
       } finally {
         setIsDeleting(null);
       }
@@ -60,112 +72,110 @@ export default function CategoryModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
-            إدارة الفئات التعليمية
-          </h3>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
-          >
-            <XMarkIcon className="w-6 h-6" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm overflow-y-auto">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+        className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden"
+        dir="rtl"
+      >
+        {/* Header */}
+        <div className="bg-gradient-to-br from-emerald-600 to-teal-700 p-6 text-white flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shadow-lg">
+              <Tags className="h-6 w-6" />
+            </div>
+            <div>
+              <h3 className="text-xl font-bold">إدارة الفئات التعليمية</h3>
+              <p className="text-emerald-100 text-sm">أضف أو احذف تصنيفات البرامج التعليمية</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="h-10 w-10 rounded-xl bg-black/10 hover:bg-black/20 flex items-center justify-center transition-colors">
+            <X className="h-6 w-6" />
           </button>
         </div>
 
-        {/* Add New Category Form */}
-        <form
-          onSubmit={handleAddCategory}
-          className="mb-6 p-4 bg-gray-50 rounded-lg"
-        >
-          <h4 className="text-md font-medium text-gray-900 mb-3">
-            إضافة فئة جديدة
-          </h4>
-          <div className="flex gap-3">
-            <div className="basis-2/3">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                اسم الفئة *
-              </label>
-              <input
-                type="text"
-                value={newCategory.name}
-                onChange={(e) =>
-                  setNewCategory((prev) => ({ ...prev, name: e.target.value }))
-                }
-                required
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="مثال: المجمعة النفسية"
-              />
-            </div>
-            <div className="flex justify-end items-end basis-1/3">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="justify-center inline-flex items-center px-4 py-3 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <>
-                    <LoaderIcon className="w-4 h-4 ml-2 animate-spin" />
-                    جاري الإضافة...
-                  </>
-                ) : (
-                  <>
-                    <PlusIcon className="w-4 h-4 ml-2" />
-                    إضافة الفئة
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        </form>
-
-        {/* Existing Categories */}
-        <div>
-          <h4 className="text-md font-medium text-gray-900 mb-3">
-            الفئات الموجودة
-          </h4>
-          <div className="space-y-2">
-            {categories.map((category) => (
-              <div
-                key={`category-${category.id}`}
-                className="flex items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50"
-              >
-                <div className="flex items-center">
-                  <div>
-                    <p className="text-sm font-medium text-gray-900">
-                      {category.name}
-                    </p>
-                    <p className="text-xs text-gray-500">
-                      {category.courses.length} برنامج
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleDeleteCategory(category.id)}
-                  disabled={isDeleting === category.id}
-                  className="text-red-600 hover:text-red-800 p-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isDeleting === category.id ? (
-                    <LoaderIcon className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <TrashIcon className="w-4 h-4" />
-                  )}
-                </button>
+        <div className="p-8 space-y-8">
+          {/* Add New Category Form */}
+          <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+            <h4 className="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+              <Plus className="h-4 w-4 text-emerald-600" />
+              إضافة فئة جديدة
+            </h4>
+            <form onSubmit={handleAddCategory} className="flex gap-3">
+              <div className="flex-1">
+                <Input 
+                  value={newCategoryName}
+                  onChange={(e) => setNewCategoryName(e.target.value)}
+                  required
+                  placeholder="اسم الفئة الجديدة..."
+                  className="h-12 rounded-xl border-gray-200 bg-white"
+                />
               </div>
-            ))}
+              <Button 
+                type="submit" 
+                disabled={isLoading || !newCategoryName.trim()}
+                className="h-12 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 shadow-lg shadow-emerald-600/20"
+              >
+                {isLoading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Plus className="h-5 w-5" />}
+              </Button>
+            </form>
+          </div>
+
+          {/* Existing Categories */}
+          <div className="space-y-4">
+            <h4 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+              <LayoutList className="h-4 w-4 text-gray-500" />
+              الفئات المتاحة ({categories.length})
+            </h4>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
+              {categories.map((category) => (
+                <div
+                  key={category.id}
+                  className="group flex items-center justify-between p-4 bg-white border border-gray-100 rounded-2xl hover:border-emerald-200 hover:shadow-md transition-all"
+                >
+                  <div>
+                    <p className="font-bold text-gray-900">{category.name}</p>
+                    <p className="text-xs text-gray-500">{category.courses?.length || 0} برنامج</p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleDeleteCategory(category.id)}
+                    disabled={isDeleting === category.id}
+                    className="h-9 w-9 p-0 rounded-xl text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    {isDeleting === category.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              ))}
+            </div>
+            
+            {categories.length === 0 && (
+              <div className="flex flex-col items-center justify-center py-10 text-gray-400">
+                <AlertCircle className="h-8 w-8 mb-2 opacity-20" />
+                <p>لا توجد فئات حالياً</p>
+              </div>
+            )}
+          </div>
+
+          {/* Footer Actions */}
+          <div className="pt-6 border-t border-gray-100 flex justify-end">
+            <Button 
+              onClick={onClose}
+              variant="outline"
+              className="h-12 px-10 rounded-xl border-gray-200 text-gray-600 font-bold"
+            >
+              إغلاق النافذة
+            </Button>
           </div>
         </div>
-
-        <div className="flex justify-end space-x-3 pt-4 mt-6">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500"
-          >
-            إغلاق
-          </button>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
