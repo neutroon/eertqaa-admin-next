@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { Course, Category, UserRole } from "@/config/api";
@@ -49,6 +49,17 @@ export default function CoursesPage() {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const skipFilterFetch = useRef(true);
+
+  const getCourseFilters = () => {
+    const filters: { search?: string; categoryId?: string } = {};
+    if (searchQuery.trim()) filters.search = searchQuery.trim();
+    if (selectedCategory !== "all") {
+      const category = categories.find((c) => c.name === selectedCategory);
+      if (category) filters.categoryId = category.id;
+    }
+    return filters;
+  };
 
   const loadData = async (isRefresh = false) => {
     try {
@@ -56,8 +67,8 @@ export default function CoursesPage() {
       else setIsLoading(true);
 
       const [coursesRes, categoriesRes] = await Promise.all([
-        coursesService.getAllCourses(),
-        categoriesService.getAllCategories()
+        coursesService.getAllCourses(getCourseFilters()),
+        categoriesService.getAllCategories(),
       ]);
 
       setCourses(coursesRes.courses);
@@ -71,15 +82,34 @@ export default function CoursesPage() {
     }
   };
 
+  const loadCourses = async (isRefresh = false) => {
+    try {
+      if (isRefresh) setIsRefreshing(true);
+      const coursesRes = await coursesService.getAllCourses(getCourseFilters());
+      setCourses(coursesRes.courses);
+    } catch (error) {
+      console.error("Failed to load courses:", error);
+      toast.error("حدث خطأ أثناء تحميل البرامج");
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
   useEffect(() => {
     loadData();
   }, []);
 
-  const filteredCourses = courses.filter((course) => {
-    const matchesSearch = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "all" || course.category?.name === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
+  useEffect(() => {
+    if (isLoading) return;
+    if (skipFilterFetch.current) {
+      skipFilterFetch.current = false;
+      return;
+    }
+    const timer = setTimeout(() => loadCourses(true), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, selectedCategory, isLoading]);
+
+  const filteredCourses = courses;
 
   const handleDeleteCourse = async (courseId: string) => {
     if (confirm("هل أنت متأكد من حذف هذا البرنامج؟")) {
