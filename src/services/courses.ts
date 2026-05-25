@@ -11,12 +11,20 @@ import {
 } from "@/config/api";
 
 export class CoursesService {
-  // Get all leads
-  async getAllCourses(): Promise<CoursesResponse> {
+  async getAllCourses(params?: {
+    search?: string;
+    categoryId?: string;
+  }): Promise<CoursesResponse> {
     try {
-      const response = await apiService.get<CoursesResponse>(
-        API_CONFIG.ENDPOINTS.COURSES.GET_ALL,
-      );
+      const query = new URLSearchParams();
+      if (params?.search?.trim()) query.append("search", params.search.trim());
+      if (params?.categoryId) query.append("categoryId", params.categoryId);
+
+      const endpoint = query.toString()
+        ? `${API_CONFIG.ENDPOINTS.COURSES.GET_ALL}?${query.toString()}`
+        : API_CONFIG.ENDPOINTS.COURSES.GET_ALL;
+
+      const response = await apiService.get<CoursesResponse>(endpoint);
 
       if (response.success && response.data) {
         return response.data;
