@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/AuthContext";
-import { Course, Category, UserRole } from "@/config/api";
+import { Course, Category } from "@/config/api";
 import { coursesService } from "@/services/courses";
 import { categoriesService } from "@/services/categories";
 import { 
@@ -33,12 +31,10 @@ import {
   TableHeader, 
   TableRow 
 } from "@/components/ui/table";
-import { Pencil, Trash2, MoreVertical, ShieldAlert } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function CoursesPage() {
-  const router = useRouter();
-  const { user } = useAuth();
   const [courses, setCourses] = useState<Course[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -122,26 +118,6 @@ export default function CoursesPage() {
       }
     }
   };
-
-  // Role check: Only ADMIN can manage courses
-  if (user && user.role !== UserRole.ADMIN) {
-    return (
-      <div className="flex flex-col items-center justify-center h-[60vh] text-center space-y-6">
-        <div className="h-24 w-24 rounded-3xl bg-red-50 flex items-center justify-center text-red-500 shadow-inner">
-          <ShieldAlert className="h-12 w-12" />
-        </div>
-        <div className="space-y-2">
-          <h1 className="text-2xl font-bold text-gray-900">غير مصرح لك بالدخول</h1>
-          <p className="text-gray-500 max-w-md mx-auto">
-            هذه الصفحة مخصصة لمديري النظام فقط لإدارة البرامج التعليمية.
-          </p>
-        </div>
-        <Button onClick={() => router.push("/dashboard")} className="bg-blue-600 hover:bg-blue-700 rounded-xl px-8">
-          العودة للرئيسية
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="space-y-6 pb-12">
