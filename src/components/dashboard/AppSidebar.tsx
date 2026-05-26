@@ -66,6 +66,7 @@ const navigationItems = [
     href: "/dashboard/users",
     icon: UserGroupIcon,
     activeIcon: UserGroupIconSolid,
+    adminOnly: true,
   },
   {
     title: "البرامج",
@@ -168,6 +169,13 @@ export default function AppSidebar() {
                 if (
                   user?.role === UserRole.ADMIN &&
                   item.href === "/dashboard/leads/my-leads"
+                ) {
+                  return null;
+                }
+                if (
+                  "adminOnly" in item &&
+                  item.adminOnly &&
+                  user?.role !== UserRole.ADMIN
                 ) {
                   return null;
                 }
