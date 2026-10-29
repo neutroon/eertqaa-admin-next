@@ -8,9 +8,13 @@ import {
   Squares2X2Icon,
   BarsArrowUpIcon,
   BarsArrowDownIcon,
+  ArrowDownTrayIcon,
 } from "@heroicons/react/24/outline";
 import { Lead, LeadsResponse, LeadsStatsResponse } from "@/config/api";
 import { leadsService } from "@/services/leads";
+import { exportLeadsToExcel, fetchAllLeadsForExport } from "@/utils/leadsExport";
+import { useAuth, UserRole } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import LeadModal from "./LeadModal";
 import LeadCard from "./LeadCard";
 import LeadsTable from "./LeadsTable";
@@ -88,6 +92,35 @@ export default function LeadsManagement({
   const [isUpdatingStatus, setIsUpdatingStatus] = useState<string | null>(null);
   const [isClaiming, setIsClaiming] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
+  const [isExporting, setIsExporting] = useState(false);
+  const { user } = useAuth();
+  const canExport = user?.role === UserRole.ADMIN;
+
+  const handleExportLeads = async () => {
+    if (!canExport || isExporting) return;
+
+    try {
+      setIsExporting(true);
+      const leads = await fetchAllLeadsForExport();
+
+      if (leads.length === 0) {
+        toast.info("لا توجد بيانات للتصدير");
+        return;
+      }
+
+      const fileName = await exportLeadsToExcel(leads);
+      toast.success(`تم تصدير ${leads.length} عميل إلى ${fileName}`);
+    } catch (error) {
+      console.error("Failed to export leads:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "فشل في تصدير العملاء المحتملين",
+      );
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const handleCreateLead = () => {
     setEditingLead(null);
@@ -260,6 +293,21 @@ export default function LeadsManagement({
         </div>
 
         <div className="flex items-center gap-2">
+          {canExport && (
+            <button
+              onClick={handleExportLeads}
+              disabled={isExporting}
+              className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-green-600 rounded-lg text-sm font-medium text-green-700 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors shadow-sm whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isExporting ? (
+                <LoadingSpinner size="sm" className="ml-2 text-green-600" />
+              ) : (
+                <ArrowDownTrayIcon className="w-4 h-4 ml-2" />
+              )}
+              {isExporting ? "جاري تصدير..." : "تصدير إلى Excel"}
+            </button>
+          )}
+
           <button
             onClick={handleCreateLead}
             className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors shadow-md whitespace-nowrap"
