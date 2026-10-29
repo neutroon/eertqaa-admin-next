@@ -99,21 +99,18 @@ const COLUMNS: ColumnDefinition[] = [
 function parseDate(value?: string | null): string | Date {
   if (!value) return "";
   const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? "" : date;
+  if (Number.isNaN(date.getTime())) return "";
+  // Shift by the local offset so Excel renders local time instead of UTC.
+  return new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
 }
 
 function sanitizeText(value: unknown): string {
   if (value === null || value === undefined) return "";
   const text = String(value);
-  // Neutralize spreadsheet formula injection from user-provided values.
-  return /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
-}
-
-function sanitizePhone(value: unknown): string {
-  if (value === null || value === undefined) return "";
-  const text = String(value);
-  // Leading "+" is a valid phone prefix; only escape genuine formula triggers.
-  return /^[=@\t\r]/.test(text) ? `'${text}` : text;
+  // Cells are written as plain strings, so only a leading "=" can be
+  // interpreted as a formula. Keep "+", "-" and "@" intact (valid phone
+  // prefixes and note text) instead of corrupting them with a quote.
+  return text.startsWith("=") ? `'${text}` : text;
 }
 
 function measureWidth(value: string): number {
@@ -161,7 +158,7 @@ export async function buildLeadsWorkbook(leads: Lead[]): Promise<Workbook> {
       const raw = column.value(lead);
       if (column.isDate) return raw;
 
-      const text = column.isPhone ? sanitizePhone(raw) : sanitizeText(raw);
+      const text = sanitizeText(raw);
       const width = measureWidth(text) + 4;
       if (width > computedWidths[columnIndex]) {
         computedWidths[columnIndex] = Math.min(50, width);

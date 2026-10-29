@@ -4,6 +4,7 @@ import { buildLeadsExportFileName, buildLeadsWorkbook } from "./leadsWorkbook";
 
 const EXPORT_PAGE_SIZE = 200;
 const MAX_EXPORT_PAGES = 1000;
+const MAX_EXPORT_LEADS = EXPORT_PAGE_SIZE * MAX_EXPORT_PAGES;
 
 export async function fetchAllLeadsForExport(): Promise<Lead[]> {
   const collected: Lead[] = [];
@@ -17,6 +18,13 @@ export async function fetchAllLeadsForExport(): Promise<Lead[]> {
       limit: EXPORT_PAGE_SIZE,
       "orderBy.createdAt": "desc",
     });
+
+    const total = Number(response.total) || 0;
+    if (total > MAX_EXPORT_LEADS) {
+      throw new Error(
+        `عدد العملاء (${total}) يتجاوز الحد الأقصى للتصدير (${MAX_EXPORT_LEADS}). يرجى تضييق نطاق التصدير.`,
+      );
+    }
 
     const leads = response.leads || [];
     for (const lead of leads) {

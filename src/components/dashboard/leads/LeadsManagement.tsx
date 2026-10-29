@@ -51,6 +51,7 @@ interface LeadsManagementProps {
   leadProfile?: Lead | null;
   leadProfileLoading?: boolean;
   refetchLeadProfile?: () => void;
+  allowExport?: boolean;
 }
 
 export default function LeadsManagement({
@@ -68,6 +69,7 @@ export default function LeadsManagement({
   leadProfile,
   leadProfileLoading = false,
   refetchLeadProfile,
+  allowExport = true,
   children,
 }: LeadsManagementProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -94,7 +96,7 @@ export default function LeadsManagement({
   const [viewMode, setViewMode] = useState<"grid" | "table">("table");
   const [isExporting, setIsExporting] = useState(false);
   const { user } = useAuth();
-  const canExport = user?.role === UserRole.ADMIN;
+  const canExport = allowExport && user?.role === UserRole.ADMIN;
 
   const handleExportLeads = async () => {
     if (!canExport || isExporting) return;

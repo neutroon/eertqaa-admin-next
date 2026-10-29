@@ -144,6 +144,7 @@ export default function MyLeadsPage() {
                     leadProfile={leadProfile}
                     leadProfileLoading={leadProfileLoading}
                     refetchLeadProfile={refetchLeadProfile}
+                    allowExport={false}
                 >
                     {leadsData.leads.length > 0 && (
                         <div className="flex items-center gap-2" dir="ltr">
