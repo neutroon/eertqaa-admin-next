@@ -2,47 +2,9 @@ import { Lead } from "@/config/api";
 import { leadsService } from "@/services/leads";
 import { buildLeadsExportFileName, buildLeadsWorkbook } from "./leadsWorkbook";
 
-const EXPORT_PAGE_SIZE = 200;
-const MAX_EXPORT_PAGES = 1000;
-const MAX_EXPORT_LEADS = EXPORT_PAGE_SIZE * MAX_EXPORT_PAGES;
-
 export async function fetchAllLeadsForExport(): Promise<Lead[]> {
-  const collected: Lead[] = [];
-  const seenIds = new Set<string>();
-  let page = 1;
-  let totalPages = 1;
-
-  do {
-    const response = await leadsService.getAllLeads({
-      page,
-      limit: EXPORT_PAGE_SIZE,
-      "orderBy.createdAt": "desc",
-    });
-
-    const total = Number(response.total) || 0;
-    if (total > MAX_EXPORT_LEADS) {
-      throw new Error(
-        `عدد العملاء (${total}) يتجاوز الحد الأقصى للتصدير (${MAX_EXPORT_LEADS}). يرجى تضييق نطاق التصدير.`,
-      );
-    }
-
-    const leads = response.leads || [];
-    for (const lead of leads) {
-      if (lead.id) {
-        if (seenIds.has(lead.id)) continue;
-        seenIds.add(lead.id);
-      }
-      collected.push(lead);
-    }
-
-    totalPages =
-      Number(response.totalPages) ||
-      Math.ceil((Number(response.total) || 0) / EXPORT_PAGE_SIZE);
-    if (leads.length === 0) break;
-    page += 1;
-  } while (page <= totalPages && page <= MAX_EXPORT_PAGES);
-
-  return collected;
+  const response = await leadsService.getLeadsForExport();
+  return response.leads || [];
 }
 
 export async function exportLeadsToExcel(leads: Lead[]): Promise<string> {

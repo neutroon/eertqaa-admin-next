@@ -13,7 +13,8 @@ class ApiService {
   // Generic request method
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: RequestInit = {},
+    timeoutMs: number = this.timeout
   ): Promise<ApiResponse<T>> {
     const url = `${this.baseURL}${endpoint}`;
 
@@ -34,7 +35,7 @@ class ApiService {
     try {
       // Create abort controller for timeout
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), this.timeout);
+      const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
       const response = await fetch(url, {
         ...config,
@@ -85,7 +86,8 @@ class ApiService {
   // GET request
   async get<T>(
     endpoint: string,
-    params?: Record<string, string>
+    params?: Record<string, string>,
+    timeoutMs?: number
   ): Promise<ApiResponse<T>> {
     const url = new URL(`${this.baseURL}${endpoint}`);
     if (params) {
@@ -94,9 +96,13 @@ class ApiService {
       );
     }
 
-    return this.request<T>(url.pathname + url.search, {
-      method: "GET",
-    });
+    return this.request<T>(
+      url.pathname + url.search,
+      {
+        method: "GET",
+      },
+      timeoutMs
+    );
   }
 
   // POST request

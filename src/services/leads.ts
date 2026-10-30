@@ -5,11 +5,14 @@ import {
   CreateLeadRequest,
   UpdateLeadRequest,
   LeadsResponse,
+  LeadsExportResponse,
   ApiResponse,
   LeadsStatsResponse,
   LeadFeedback,
   AddLeadFeedbackRequest,
 } from "@/config/api";
+
+const EXPORT_REQUEST_TIMEOUT = 60_000;
 
 export class LeadsService {
   // Get all leads
@@ -55,6 +58,26 @@ export class LeadsService {
       }
     } catch (error: any) {
       console.error("Get leads error:", error);
+      throw error;
+    }
+  }
+
+  // Get the complete lead dataset for the admin-only Excel export
+  async getLeadsForExport(): Promise<LeadsExportResponse> {
+    try {
+      const response = await apiService.get<LeadsExportResponse>(
+        API_CONFIG.ENDPOINTS.LEADS.EXPORT,
+        undefined,
+        EXPORT_REQUEST_TIMEOUT,
+      );
+
+      if (response.success && response.data) {
+        return response.data;
+      } else {
+        throw new Error(response.message || "Failed to fetch leads for export");
+      }
+    } catch (error: any) {
+      console.error("Get leads for export error:", error);
       throw error;
     }
   }

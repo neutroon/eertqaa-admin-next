@@ -17,6 +17,7 @@ export const API_CONFIG = {
       GET_ALL: "/api/v1/leads",
       GET_BY_ID: "/api/v1/leads",
       STATS: "/api/v1/leads/stats",
+      EXPORT: "/api/v1/leads/export",
       CREATE: "/api/v1/leads",
       UPDATE: "/api/v1/leads",
       DELETE: "/api/v1/leads",
@@ -191,6 +192,11 @@ export interface LeadsResponse extends ApiResponse {
   page: number;
   total: number;
   totalPages: number;
+  leads: Lead[];
+}
+
+export interface LeadsExportResponse extends ApiResponse {
+  total: number;
   leads: Lead[];
 }
 
