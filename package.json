@@ -2,6 +2,7 @@
   "name": "eertqaa-dashboard",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.28.0",
   "scripts": {
     "dev:turbopack": "next dev --turbopack",
     "dev": "next dev",
